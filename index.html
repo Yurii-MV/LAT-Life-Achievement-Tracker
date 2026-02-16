@@ -1,0 +1,3073 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life Achievement Tracker</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --app-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: var(--app-gradient);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .stats {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .stat-card {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 20px 30px;
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        min-width: 150px;
+      }
+
+      .stat-number {
+        font-size: 2em;
+        font-weight: bold;
+        display: block;
+      }
+
+      .stat-label {
+        font-size: 0.9em;
+        opacity: 0.9;
+        margin-top: 5px;
+      }
+
+      .categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .category {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .category.collapsed {
+        padding-bottom: 20px;
+      }
+
+      .category-header {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+        user-select: none;
+      }
+
+      .category-header-top {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      .category-header-top:hover {
+        opacity: 0.8;
+      }
+
+      .category-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding-left: 60px;
+      }
+
+      .category.collapsed .category-header {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .category-icon {
+        font-size: 2em;
+        margin-right: 15px;
+      }
+
+      .category-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #333;
+        flex: 1;
+      }
+
+      .collapse-toggle {
+        /* background removed — gradient will apply to the text only */
+        background: transparent;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        padding: 5px;
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+        color: white; /* fallback for browsers that don't support text-clip */
+        border-radius: 6px;
+        display: inline-block;
+
+        /* apply gradient to the TEXT (uses --app-gradient set by settings) */
+        background-image: var(--app-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .collapse-toggle:hover {
+        transform: scale(1.2);
+      }
+
+      .category.collapsed .collapse-toggle {
+        transform: rotate(-90deg);
+      }
+
+      .category-items {
+        overflow: hidden;
+        transition:
+          max-height 0.3s ease,
+          opacity 0.3s ease;
+      }
+
+      .category.collapsed .category-items {
+        max-height: 0;
+        opacity: 0;
+      }
+
+      .achievement {
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 10px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .achievement-main {
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .achievement:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .achievement.unlocked {
+        background: var(--app-gradient);
+        color: white;
+      }
+
+      .achievement.unlocked .achievement-icon {
+        filter: grayscale(0%) brightness(1.2);
+      }
+
+      .achievement.locked {
+        opacity: 0.6;
+      }
+
+      .achievement.locked .achievement-icon {
+        filter: grayscale(100%);
+      }
+
+      .achievement-icon {
+        font-size: 2em;
+        margin-right: 15px;
+        transition: all 0.3s ease;
+        cursor: zoom-in;
+      }
+
+      .achievement-content {
+        flex: 1;
+      }
+
+      .achievement-name {
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+
+      .achievement-description {
+        font-size: 0.85em;
+        opacity: 0.8;
+      }
+
+      .achievement-controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .achievement.unlocked .achievement-controls {
+        border-top-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .achievement-controls .sort-controls {
+        margin-right: 0;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+      }
+
+      .unlock-animation {
+        animation: unlockPulse 0.6s ease;
+      }
+
+      @keyframes unlockPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 400px;
+        animation: modalAppear 0.5s ease;
+      }
+
+      @keyframes modalAppear {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .modal-icon {
+        font-size: 5em;
+        margin-bottom: 20px;
+      }
+
+      .image-modal-content {
+        max-width: 90%;
+        max-height: 90%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .image-modal-content img {
+        max-width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+      }
+
+      .modal h2 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .modal p {
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .modal button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .modal button:hover {
+        transform: scale(1.05);
+      }
+
+      .add-achievement-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--app-gradient);
+        color: white;
+        border: none;
+        font-size: 2em;
+        cursor: pointer;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s ease;
+      }
+
+      .add-achievement-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .form-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        overflow-y: auto;
+      }
+
+      .form-modal.active {
+        display: flex;
+      }
+
+      .form-content {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: modalAppear 0.5s ease;
+      }
+
+      .form-content h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1em;
+        font-family: inherit;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .image-upload-area {
+        border: 2px dashed #667eea;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .image-upload-area:hover {
+        background: #f8f9ff;
+      }
+
+      .image-upload-area.has-image {
+        border-style: solid;
+      }
+
+      .preview-image {
+        max-width: 150px;
+        max-height: 150px;
+        margin: 10px auto;
+        display: block;
+        border-radius: 8px;
+      }
+
+      .upload-icon {
+        font-size: 3em;
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .upload-text {
+        color: #666;
+        font-size: 0.9em;
+      }
+
+      .form-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+      }
+
+      .btn-primary {
+        background: var(--app-gradient);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .btn-secondary:hover {
+        background: #d0d0d0;
+      }
+
+      .action-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.2s ease;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .edit-mode .action-btn {
+        display: flex;
+      }
+
+      .achievement.locked .action-btn {
+        background: rgba(0, 0, 0, 0.1);
+        color: #666;
+      }
+
+      .action-btn:hover {
+        transform: scale(1.1);
+      }
+
+      .edit-btn:hover {
+        background: #4caf50;
+      }
+
+      .delete-btn:hover {
+        background: #f44336;
+      }
+
+      .custom-image {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-right: 15px;
+      }
+
+      .sort-btn {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85em;
+        transition: all 0.2s ease;
+        margin-right: 5px;
+      }
+
+      .sort-btn:hover {
+        background: rgba(102, 126, 234, 0.2);
+        transform: scale(1.05);
+      }
+
+      .sort-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+
+      .category-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-left: auto;
+      }
+
+      .category-action-btn {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1.2em;
+        transition: all 0.2s ease;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+      }
+
+      .edit-mode .category-action-btn {
+        display: flex;
+      }
+
+      .category-action-btn:hover {
+        background: rgba(102, 126, 234, 0.2);
+        transform: scale(1.1);
+      }
+
+      .category-action-btn.delete {
+        background: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+      }
+
+      .category-action-btn.delete:hover {
+        background: rgba(244, 67, 54, 0.2);
+      }
+
+      .add-category-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.2s ease;
+      }
+
+      .add-category-btn:hover {
+        transform: scale(1.05);
+      }
+
+      .category-form-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .full-width {
+        grid-column: 1 / -1;
+      }
+
+      .header-actions {
+        text-align: center;
+        margin-bottom: 20px;
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .header-actions button {
+        background: var(--app-gradient);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .header-actions button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .settings-toggle-btn {
+        background: rgba(102, 126, 234, 0.15) !important;
+        color: #667eea !important;
+      }
+
+      .settings-toggle-btn.active {
+        background: var(--app-gradient) !important;
+        color: white !important;
+      }
+
+      .sort-controls {
+        display: none;
+        gap: 3px;
+      }
+
+      .edit-mode .sort-controls {
+        display: flex;
+      }
+
+      .warning-text {
+        color: #f44336;
+        font-size: 0.9em;
+        margin-top: 10px;
+        padding: 10px;
+        background: rgba(244, 67, 54, 0.1);
+        border-radius: 5px;
+      }
+
+      .reset-btn {
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        background: rgba(244, 67, 54, 0.9);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        display: none;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .edit-mode .reset-btn {
+        display: flex;
+      }
+
+      .reset-btn:hover {
+        background: rgba(244, 67, 54, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+      }
+
+      .confirm-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+      }
+
+      .confirm-modal.active {
+        display: flex;
+      }
+
+      .confirm-content {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 450px;
+        animation: modalAppear 0.5s ease;
+      }
+
+      .confirm-icon {
+        font-size: 4em;
+        margin-bottom: 20px;
+      }
+
+      .confirm-content h2 {
+        color: #f44336;
+        margin-bottom: 15px;
+      }
+
+      .confirm-content p {
+        color: #666;
+        margin-bottom: 25px;
+        line-height: 1.6;
+      }
+
+      .confirm-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      .confirm-buttons button {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+      }
+
+      .confirm-buttons .btn-cancel {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      .confirm-buttons .btn-cancel:hover {
+        background: #d0d0d0;
+      }
+
+      .confirm-buttons .btn-confirm {
+        background: #f44336;
+        color: white;
+      }
+
+      .confirm-buttons .btn-confirm:hover {
+        background: #d32f2f;
+        transform: scale(1.05);
+      }
+
+      input[type='file'] {
+        display: none;
+      }
+
+      .emoji-picker {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+
+      .emoji-option {
+        font-size: 1.5em;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 5px;
+        text-align: center;
+        transition: all 0.2s ease;
+      }
+
+      .emoji-option:hover {
+        background: #f0f0f0;
+        transform: scale(1.2);
+      }
+    </style>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="appicon.png" sizes="192x192" type="image/png" />
+    <link rel="icon" href="appicon.svg" sizes="any" type="image/svg+xml" />
+    <link rel="shortcut icon" href="appicon.png" />
+    <meta name="theme-color" content="#667eea" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="LAT" />
+    <link rel="apple-touch-icon" href="appicon.svg" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🏆 Life Achievement Tracker</h1>
+        <p>Відзначай ваші успіхи та розвивайтеся!</p>
+      </header>
+      <div class="header-actions">
+        <button
+          class="settings-toggle-btn"
+          onclick="toggleEditMode()"
+          id="editModeBtn"
+        >
+          ⚙️
+        </button>
+      </div>
+      <div
+        class="header-actions extra-buttons"
+        id="extraButtons"
+        style="display: none"
+      >
+        <button onclick="openCategoryModal()" title="Додати категорію">
+          <strong>📦</strong>
+        </button>
+        <button onclick="exportData()" title="Експорт">💾</button>
+        <button onclick="importData()" title="Імпорт">📥</button>
+        <button onclick="checkStorageInfo()" title="Сховище">🗄️</button>
+        <button
+          onclick="openSettingsModal()"
+          id="settingsBtn"
+          title="Налаштування теми"
+        >
+          🎨
+        </button>
+      </div>
+      <input
+        type="file"
+        id="importFile"
+        accept=".json"
+        style="display: none"
+        onchange="handleImportFile(event)"
+      />
+
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-number"
+            ><span id="unlockedCount">0</span> /
+            <span id="totalCount">0</span></span
+          >
+          <span class="stat-label">Виконано досягнень</span>
+        </div>
+      </div>
+
+      <div class="categories" id="categoriesContainer"></div>
+    </div>
+
+    <div class="modal" id="achievementModal">
+      <div class="modal-content">
+        <div class="modal-icon" id="modalIcon">🎉</div>
+        <h2 id="modalTitle">Досягнення відкрито!</h2>
+        <p id="modalDescription"></p>
+        <button onclick="closeModal()">Супер!</button>
+      </div>
+    </div>
+
+    <div class="modal" id="imageModal" onclick="closeImageModal()">
+      <div class="image-modal-content">
+        <img id="imageModalImg" src="" alt="Повний розмір" />
+      </div>
+    </div>
+
+    <div class="form-modal" id="formModal">
+      <div class="form-content">
+        <h2 id="formTitle">Додати досягнення</h2>
+        <form id="achievementForm" onsubmit="saveAchievement(event)">
+          <div class="form-group">
+            <label for="categorySelect">Категорія</label>
+            <select id="categorySelect" required>
+              <option value="">Оберіть категорію</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="achievementName">Назва досягнення</label>
+            <input type="text" id="achievementName" required maxlength="50" />
+          </div>
+
+          <div class="form-group">
+            <label for="achievementDescription">Опис (необов'язково)</label>
+            <textarea id="achievementDescription" maxlength="100"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Іконка або зображення (необов'язково)</label>
+            <div
+              class="image-upload-area"
+              onclick="document.getElementById('imageUpload').click()"
+            >
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                onchange="handleImageUpload(event)"
+              />
+              <div id="uploadContent">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">
+                  Натисніть, щоб завантажити зображення<br />або оберіть емодзі
+                  нижче
+                </div>
+              </div>
+              <img
+                id="previewImage"
+                class="preview-image"
+                style="display: none"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Або оберіть емодзі</label>
+            <div class="emoji-picker" id="emojiPicker"></div>
+          </div>
+
+          <input type="hidden" id="achievementId" />
+          <input type="hidden" id="achievementImage" />
+          <input type="hidden" id="editingCategory" />
+
+          <div class="form-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeFormModal()"
+            >
+              Скасувати
+            </button>
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="form-modal" id="categoryModal">
+      <div class="form-content">
+        <h2 id="categoryFormTitle">Додати категорію</h2>
+        <form id="categoryForm" onsubmit="saveCategory(event)">
+          <div class="form-group">
+            <label for="categoryName">Назва категорії</label>
+            <input
+              type="text"
+              id="categoryName"
+              required
+              maxlength="30"
+              placeholder="Наприклад: Хобі, Навчання"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Іконка категорії</label>
+            <div
+              class="image-upload-area"
+              onclick="document.getElementById('categoryImageUpload').click()"
+            >
+              <input
+                type="file"
+                id="categoryImageUpload"
+                accept="image/*"
+                onchange="handleCategoryImageUpload(event)"
+              />
+              <div id="categoryUploadContent">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">
+                  Натисніть, щоб завантажити зображення<br />або оберіть емодзі
+                  нижче
+                </div>
+              </div>
+              <img
+                id="categoryPreviewImage"
+                class="preview-image"
+                style="display: none"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Або оберіть емодзі</label>
+            <div class="emoji-picker" id="categoryEmojiPicker"></div>
+          </div>
+
+          <input type="hidden" id="categoryKey" />
+          <input type="hidden" id="categoryIcon" />
+
+          <div class="form-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeCategoryModal()"
+            >
+              Скасувати
+            </button>
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="form-modal" id="settingsModal">
+      <div class="form-content">
+        <h2>Налаштування теми</h2>
+        <form id="settingsForm" onsubmit="saveSettings(event)">
+          <div class="form-group">
+            <label for="themeColor1">Колір 1</label>
+            <input type="color" id="themeColor1" value="#667eea" />
+          </div>
+
+          <div class="form-group">
+            <label for="themeColor2">Колір 2</label>
+            <input type="color" id="themeColor2" value="#764ba2" />
+          </div>
+
+          <div class="form-group">
+            <label for="themeAngle">Кут градієнта (°)</label>
+            <input
+              type="number"
+              id="themeAngle"
+              min="0"
+              max="360"
+              value="135"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Попередній перегляд</label>
+            <div
+              id="gradientPreview"
+              style="
+                height: 80px;
+                border-radius: 8px;
+                border: 1px solid #e0e0e0;
+              "
+            ></div>
+          </div>
+
+          <div class="form-buttons">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="closeSettingsModal()"
+            >
+              Скасувати
+            </button>
+            <button type="submit" class="btn btn-primary">Зберегти</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="confirm-modal" id="confirmImportModal">
+      <div class="confirm-content">
+        <div class="confirm-icon">⚠️</div>
+        <h2>Імпортувати дані?</h2>
+        <p>Імпорт замінить всі поточні дані.</p>
+        <p>
+          <strong
+            >Рекомендується спочатку зробити експорт поточних даних!</strong
+          >
+        </p>
+        <div class="confirm-buttons">
+          <button class="btn-cancel" onclick="closeConfirmImport()">
+            Скасувати
+          </button>
+          <button class="btn-confirm" onclick="confirmImport()">
+            Так, імпортувати
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="confirm-modal" id="storageInfoModal">
+      <div class="confirm-content">
+        <div class="confirm-icon">💾</div>
+        <h2>Використання сховища</h2>
+        <p id="storageInfoMessage"></p>
+        <div class="confirm-buttons">
+          <button class="btn-cancel" onclick="closeStorageInfo()">
+            Закрити
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="confirm-modal" id="confirmResetModal">
+      <div class="confirm-content">
+        <div class="confirm-icon">⚠️</div>
+        <h2>Скинути всі дані?</h2>
+        <p>
+          Ця дія видалить всі ваші досягнення, категорії та прогрес. Програма
+          буде повернена до початкового стану.
+        </p>
+        <p><strong>Цю дію неможливо скасувати!</strong></p>
+        <div class="confirm-buttons">
+          <button class="btn-cancel" onclick="closeConfirmReset()">
+            Скасувати
+          </button>
+          <button class="btn-confirm" onclick="confirmReset()">
+            Так, скинути все
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="confirm-modal" id="confirmDeleteModal">
+      <div class="confirm-content">
+        <div class="confirm-icon">⚠️</div>
+        <h2 id="confirmDeleteTitle">Видалити?</h2>
+        <p id="confirmDeleteMessage"></p>
+        <div class="confirm-buttons">
+          <button class="btn-cancel" onclick="closeConfirmDelete()">
+            Скасувати
+          </button>
+          <button class="btn-confirm" onclick="confirmDelete()">
+            Так, видалити
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button
+      class="reset-btn"
+      onclick="openConfirmReset()"
+      title="Скинути всі дані"
+    >
+      <span>🔄</span>
+      <span>Скинути все</span>
+    </button>
+
+    <button
+      class="add-achievement-btn"
+      onclick="openAddModal()"
+      title="Додати досягнення"
+    >
+      +
+    </button>
+
+    <script>
+      const emojis = [
+        '🏃',
+        '🥗',
+        '💧',
+        '🧘',
+        '🏋️',
+        '💪',
+        '⚽',
+        '🏊',
+        '🚴',
+        '🎯',
+        '📚',
+        '🎓',
+        '💼',
+        '🚀',
+        '💡',
+        '🏆',
+        '🎉',
+        '🤝',
+        '❤️',
+        '🎤',
+        '🌍',
+        '✈️',
+        '🏖️',
+        '🗺️',
+        '📖',
+        '🎨',
+        '🎵',
+        '🎸',
+        '🎬',
+        '📷',
+        '🌱',
+        '🌻',
+        '🌈',
+        '⭐',
+        '🌟',
+        '💫',
+        '✨',
+        '💰',
+        '💵',
+        '📊',
+        '📈',
+        '🏠',
+        '🏡',
+        '💎',
+        '🔑',
+        '🎁',
+        '🍕',
+        '🍔',
+        '☕',
+        '🍰',
+        '🎮',
+        '🎲',
+        '🎪',
+        '🎭',
+        '🏔️',
+        '🌊',
+        '🔥',
+        '❄️',
+        '🌸',
+        '🎄',
+        '👥',
+        '🎯',
+        '📱',
+        '💻',
+        '🖥️',
+        '⌚',
+        '🎧',
+        '📺',
+        '🎹',
+        '🎺',
+      ];
+
+      let achievements = {
+        health: {
+          title: "Здоров'я",
+          icon: '💪',
+          collapsed: true,
+          order: 0,
+          items: [
+            {
+              id: 1,
+              icon: '🏃',
+              name: 'Перший крок',
+              description: 'Пробігти перші 5 км',
+              points: 10,
+              unlocked: false,
+            },
+            {
+              id: 2,
+              icon: '🥗',
+              name: 'Здорове харчування',
+              description: 'Тиждень правильного харчування',
+              points: 15,
+              unlocked: false,
+            },
+            {
+              id: 3,
+              icon: '💧',
+              name: 'Водний баланс',
+              description: 'Пити 2л води щодня протягом місяця',
+              points: 20,
+              unlocked: false,
+            },
+            {
+              id: 4,
+              icon: '🧘',
+              name: 'Zen майстер',
+              description: '30 днів медитації підряд',
+              points: 25,
+              unlocked: false,
+            },
+            {
+              id: 5,
+              icon: '🏋️',
+              name: 'Силач',
+              description: '3 місяці регулярних тренувань',
+              points: 30,
+              unlocked: false,
+            },
+          ],
+        },
+        career: {
+          title: "Кар'єра",
+          icon: '💼',
+          collapsed: true,
+          order: 1,
+          items: [
+            {
+              id: 6,
+              icon: '📚',
+              name: 'Перший навик',
+              description: 'Вивчити нову технологію',
+              points: 15,
+              unlocked: false,
+            },
+            {
+              id: 7,
+              icon: '🎯',
+              name: 'Підвищення',
+              description: 'Отримати підвищення на роботі',
+              points: 30,
+              unlocked: false,
+            },
+            {
+              id: 8,
+              icon: '🚀',
+              name: 'Свій проєкт',
+              description: 'Запустити власний проєкт',
+              points: 50,
+              unlocked: false,
+            },
+            {
+              id: 9,
+              icon: '💡',
+              name: 'Інноватор',
+              description: 'Реалізувати креативну ідею',
+              points: 25,
+              unlocked: false,
+            },
+            {
+              id: 10,
+              icon: '🏆',
+              name: 'Професіонал',
+              description: '5 років досвіду в галузі',
+              points: 100,
+              unlocked: false,
+            },
+          ],
+        },
+        social: {
+          title: 'Соціальне життя',
+          icon: '👥',
+          collapsed: true,
+          order: 2,
+          items: [
+            {
+              id: 11,
+              icon: '🎉',
+              name: 'Організатор',
+              description: 'Організувати захід для друзів',
+              points: 15,
+              unlocked: false,
+            },
+            {
+              id: 12,
+              icon: '🤝',
+              name: 'Нові знайомства',
+              description: 'Познайомитися з 10 новими людьми',
+              points: 20,
+              unlocked: false,
+            },
+            {
+              id: 13,
+              icon: '❤️',
+              name: 'Довгострокові відносини',
+              description: 'Рік у відносинах',
+              points: 30,
+              unlocked: false,
+            },
+            {
+              id: 14,
+              icon: '🎤',
+              name: 'Публічний виступ',
+              description: 'Виступити перед аудиторією',
+              points: 25,
+              unlocked: false,
+            },
+            {
+              id: 15,
+              icon: '🌍',
+              name: 'Мандрівник',
+              description: 'Відвідати 5 нових країн',
+              points: 40,
+              unlocked: false,
+            },
+          ],
+        },
+        personal: {
+          title: 'Особистий розвиток',
+          icon: '🌟',
+          collapsed: true,
+          order: 3,
+          items: [
+            {
+              id: 16,
+              icon: '📖',
+              name: 'Книголюб',
+              description: 'Прочитати 12 книг за рік',
+              points: 20,
+              unlocked: false,
+            },
+            {
+              id: 17,
+              icon: '🎨',
+              name: 'Творець',
+              description: 'Створити щось своїми руками',
+              points: 15,
+              unlocked: false,
+            },
+            {
+              id: 18,
+              icon: '🎵',
+              name: 'Музикант',
+              description: 'Навчитися грати на інструменті',
+              points: 35,
+              unlocked: false,
+            },
+            {
+              id: 19,
+              icon: '🌱',
+              name: 'Нова звичка',
+              description: 'Сформувати корисну звичку (21 день)',
+              points: 20,
+              unlocked: false,
+            },
+            {
+              id: 20,
+              icon: '🎓',
+              name: 'Вічний студент',
+              description: 'Пройти онлайн-курс',
+              points: 25,
+              unlocked: false,
+            },
+          ],
+        },
+        finance: {
+          title: 'Фінанси',
+          icon: '💰',
+          collapsed: true,
+          order: 4,
+          items: [
+            {
+              id: 21,
+              icon: '💵',
+              name: 'Перші заощадження',
+              description: 'Накопичити місячну зарплату',
+              points: 20,
+              unlocked: false,
+            },
+            {
+              id: 22,
+              icon: '📊',
+              name: 'Інвестор',
+              description: 'Зробити перші інвестиції',
+              points: 30,
+              unlocked: false,
+            },
+            {
+              id: 23,
+              icon: '🏠',
+              name: 'Власне житло',
+              description: 'Купити квартиру/будинок',
+              points: 100,
+              unlocked: false,
+            },
+            {
+              id: 24,
+              icon: '📈',
+              name: 'Фінансова грамотність',
+              description: 'Вести бюджет протягом року',
+              points: 25,
+              unlocked: false,
+            },
+            {
+              id: 25,
+              icon: '💎',
+              name: 'Фінансова незалежність',
+              description: 'Пасивний дохід > витрат',
+              points: 150,
+              unlocked: false,
+            },
+          ],
+        },
+      };
+
+      let nextId = 26;
+      let editMode = false;
+      let pendingDeleteAction = null;
+
+      let settings = {
+        color1: '#667eea',
+        color2: '#764ba2',
+        angle: 135,
+        useGradient: true,
+      };
+
+      function applySettings() {
+        try {
+          if (settings && settings.useGradient) {
+            const grad = `linear-gradient(${settings.angle}deg, ${settings.color1} 0%, ${settings.color2} 100%)`;
+            document.documentElement.style.setProperty('--app-gradient', grad);
+          } else {
+            document.documentElement.style.removeProperty('--app-gradient');
+          }
+        } catch (e) {
+          console.error('Error applying settings', e);
+        }
+      }
+
+      // Перемикання режиму редагування
+      function toggleEditMode() {
+        editMode = !editMode;
+        const btn = document.getElementById('editModeBtn');
+        const container = document.getElementById('categoriesContainer');
+        const body = document.body;
+        const extraButtons = document.getElementById('extraButtons');
+
+        if (editMode) {
+          btn.classList.add('active');
+          btn.textContent = '✓';
+          container.classList.add('edit-mode');
+          body.classList.add('edit-mode');
+          extraButtons.style.display = 'flex';
+        } else {
+          btn.classList.remove('active');
+          btn.textContent = '⚙️';
+          container.classList.remove('edit-mode');
+          body.classList.remove('edit-mode');
+          extraButtons.style.display = 'none';
+        }
+      }
+
+      // Завантаження даних з localStorage
+      function loadProgress() {
+        const saved = localStorage.getItem('lifeAchievements');
+        if (saved) {
+          const savedData = JSON.parse(saved);
+          achievements = savedData.achievements || achievements;
+          nextId = savedData.nextId || nextId;
+          if (savedData.settings) {
+            settings = Object.assign({}, settings, savedData.settings);
+          }
+        }
+      }
+
+      // Збереження даних
+      function saveProgress() {
+        try {
+          const dataToSave = JSON.stringify({
+            achievements: achievements,
+            nextId: nextId,
+            settings: settings,
+          });
+
+          localStorage.setItem('lifeAchievements', dataToSave);
+
+          // Перевірка використання localStorage
+          checkStorageUsage();
+        } catch (e) {
+          if (
+            e.name === 'QuotaExceededError' ||
+            e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+          ) {
+            alert(
+              '⚠️ УВАГА: Сховище переповнене!\n\nДані не збережено. Експортуйте свої досягнення (кнопка "💾 Експорт"), щоб не втратити їх.\n\nПорада: Видаліть старі зображення або використовуйте менші фото.',
+            );
+            console.error('localStorage quota exceeded');
+          } else {
+            console.error('Error saving to localStorage:', e);
+            alert('Помилка збереження даних: ' + e.message);
+          }
+        }
+      }
+
+      // Показати інформацію про сховище
+      function checkStorageInfo() {
+        try {
+          let total = 0;
+          for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+              total += localStorage[key].length + key.length;
+            }
+          }
+
+          const usedMB = (total / 1024 / 1024).toFixed(2);
+          const usedKB = (total / 1024).toFixed(0);
+          const limitMB = 5;
+          const percentage = ((usedMB / limitMB) * 100).toFixed(1);
+
+          let status = '';
+          let icon = '';
+          if (percentage < 50) {
+            status = '✅ Достатньо місця';
+            icon = '✅';
+          } else if (percentage < 70) {
+            status = '⚠️ Помірне використання';
+            icon = '⚠️';
+          } else if (percentage < 90) {
+            status = '⚠️ Високе використання';
+            icon = '⚠️';
+          } else {
+            status = '🚨 КРИТИЧНО!';
+            icon = '🚨';
+          }
+
+          const message = `
+                    ${icon} ${status}
+                    
+                    Використано: ${usedMB} MB (${usedKB} KB)
+                    Ліміт: ~${limitMB} MB
+                    Заповнення: ${percentage}%
+                    
+                    ${percentage > 70 ? '\n⚠️ Рекомендується зробити експорт даних!' : ''}
+                    ${percentage > 90 ? '\n🚨 ТЕРМІНОВО експортуйте дані!' : ''}
+                `;
+
+          document.getElementById('storageInfoMessage').textContent = message;
+          document.getElementById('storageInfoModal').classList.add('active');
+        } catch (e) {
+          alert('Помилка перевірки сховища: ' + e.message);
+        }
+      }
+
+      // Закрити вікно інформації про сховище
+      function closeStorageInfo() {
+        document.getElementById('storageInfoModal').classList.remove('active');
+      }
+
+      // Перевірка використання сховища
+      function checkStorageUsage() {
+        try {
+          let total = 0;
+          for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+              total += localStorage[key].length + key.length;
+            }
+          }
+
+          // Переводимо в MB
+          const usedMB = (total / 1024 / 1024).toFixed(2);
+          const limitMB = 5; // Приблизний ліміт для більшості браузерів
+          const percentage = ((usedMB / limitMB) * 100).toFixed(1);
+
+          // Перевірка заповнення (без виводу в консоль)
+
+          // Попередження при 70% заповнення
+          if (percentage > 70 && percentage <= 90) {
+            showStorageWarning('medium', usedMB, percentage);
+          } else if (percentage > 90) {
+            showStorageWarning('high', usedMB, percentage);
+          }
+        } catch (e) {
+          console.error('Error checking storage:', e);
+        }
+      }
+
+      // Показати попередження про заповнення сховища
+      function showStorageWarning(level, usedMB, percentage) {
+        const warningId = 'storage-warning-' + level;
+
+        // Показуємо попередження тільки раз за сесію
+        if (sessionStorage.getItem(warningId)) {
+          return;
+        }
+
+        let message = '';
+        if (level === 'medium') {
+          message = `⚠️ Сховище заповнене на ${percentage}%\n\nВикористано: ${usedMB} MB з ~5 MB\n\nРекомендація: Зробіть експорт даних для резервної копії.`;
+        } else if (level === 'high') {
+          message = `🚨 УВАГА! Сховище майже переповнене!\n\nВикористано: ${usedMB} MB з ~5 MB (${percentage}%)\n\nТЕРМІНОВО: Експортуйте дані зараз, щоб не втратити їх!`;
+        }
+
+        if (message) {
+          alert(message);
+          sessionStorage.setItem(warningId, 'shown');
+        }
+      }
+
+      // Ініціалізація емодзі-пікера
+      function initEmojiPicker() {
+        const emojiPicker = document.getElementById('emojiPicker');
+        emojiPicker.innerHTML = '';
+        emojis.forEach((emoji) => {
+          const emojiDiv = document.createElement('div');
+          emojiDiv.className = 'emoji-option';
+          emojiDiv.textContent = emoji;
+          emojiDiv.onclick = (e) => {
+            e.stopPropagation();
+            selectEmoji(emoji);
+          };
+          emojiPicker.appendChild(emojiDiv);
+        });
+      }
+
+      // Ініціалізація емодзі-пікера для категорій
+      function initCategoryEmojiPicker() {
+        const emojiPicker = document.getElementById('categoryEmojiPicker');
+        emojiPicker.innerHTML = '';
+        emojis.forEach((emoji) => {
+          const emojiDiv = document.createElement('div');
+          emojiDiv.className = 'emoji-option';
+          emojiDiv.textContent = emoji;
+          emojiDiv.onclick = (e) => {
+            e.stopPropagation();
+            selectCategoryEmoji(emoji);
+          };
+          emojiPicker.appendChild(emojiDiv);
+        });
+      }
+
+      // Вибір емодзі
+      function selectEmoji(emoji) {
+        document.getElementById('achievementImage').value = emoji;
+        document.getElementById('previewImage').style.display = 'none';
+        document.getElementById('uploadContent').innerHTML = `
+                <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
+                <div class="upload-text">Обрано емодзі (натисніть для зміни)</div>
+            `;
+      }
+
+      // Вибір емодзі для категорії
+      function selectCategoryEmoji(emoji) {
+        document.getElementById('categoryIcon').value = emoji;
+        document.getElementById('categoryPreviewImage').style.display = 'none';
+        document.getElementById('categoryUploadContent').innerHTML = `
+                <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
+                <div class="upload-text">Обрано емодзі (натисніть для зміни)</div>
+            `;
+      }
+
+      // Обробка завантаження зображення
+      function handleImageUpload(event) {
+        const file = event.target.files[0];
+
+        if (!file) {
+          alert('Файл не обрано. Спробуйте ще раз.');
+          return;
+        }
+
+        // Перевірка розміру файлу (максимум 5MB для камери)
+        if (file.size > 5 * 1024 * 1024) {
+          alert(
+            'Зображення занадто велике. Будь ласка, оберіть файл менше 5MB.',
+          );
+          return;
+        }
+
+        if (file.size === 0) {
+          alert('Файл порожній. Спробуйте зробити фото ще раз.');
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onerror = function (error) {
+          console.error('ERROR: FileReader error:', error);
+          alert('Помилка при завантаженні зображення. Спробуйте інший файл.');
+        };
+
+        reader.onload = function (e) {
+          try {
+            const imageData = e.target.result;
+
+            if (!imageData) {
+              alert('Не вдалося завантажити зображення.');
+              return;
+            }
+
+            const img = new Image();
+
+            img.onload = function () {
+              try {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                const maxSize = 400;
+                if (width > maxSize || height > maxSize) {
+                  if (width > height) {
+                    height = (height / width) * maxSize;
+                    width = maxSize;
+                  } else {
+                    width = (width / height) * maxSize;
+                    height = maxSize;
+                  }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                let compressedData;
+                if (
+                  file.type === 'image/png' ||
+                  file.type === 'image/gif' ||
+                  file.type === 'image/webp'
+                ) {
+                  compressedData = canvas.toDataURL('image/png');
+                } else {
+                  compressedData = canvas.toDataURL('image/jpeg', 0.8);
+                }
+
+                document.getElementById('achievementImage').value =
+                  compressedData;
+                document.getElementById('previewImage').src = compressedData;
+                document.getElementById('previewImage').style.display = 'block';
+                document.getElementById('uploadContent').style.display = 'none';
+              } catch (error) {
+                console.error('ERROR in canvas processing:', error);
+                alert('Помилка при обробці зображення: ' + error.message);
+              }
+            };
+
+            img.onerror = function (error) {
+              console.error('ERROR: Image failed to load');
+              alert('Не вдалося завантажити зображення. Спробуйте інший файл.');
+            };
+
+            img.src = imageData;
+          } catch (error) {
+            console.error('ERROR in onload handler:', error);
+            alert('Помилка при обробці зображення: ' + error.message);
+          }
+        };
+
+        try {
+          reader.readAsDataURL(file);
+        } catch (error) {
+          console.error('ERROR calling readAsDataURL:', error);
+          alert('Помилка при читанні файлу: ' + error.message);
+        }
+      }
+
+      // Обробка завантаження зображення категорії
+      function handleCategoryImageUpload(event) {
+        const file = event.target.files[0];
+
+        if (!file) {
+          alert('Файл не обрано. Спробуйте ще раз.');
+          return;
+        }
+
+        // Перевірка розміру файлу (максимум 5MB для камери)
+        if (file.size > 5 * 1024 * 1024) {
+          alert(
+            'Зображення занадто велике. Будь ласка, оберіть файл менше 5MB.',
+          );
+          return;
+        }
+
+        if (file.size === 0) {
+          alert('Файл порожній. Спробуйте зробити фото ще раз.');
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onerror = function (error) {
+          console.error('ERROR: FileReader error:', error);
+          alert('Помилка при завантаженні зображення. Спробуйте інший файл.');
+        };
+
+        reader.onload = function (e) {
+          try {
+            const imageData = e.target.result;
+
+            if (!imageData) {
+              alert('Не вдалося завантажити зображення.');
+              return;
+            }
+
+            const img = new Image();
+
+            img.onload = function () {
+              try {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+
+                const maxSize = 400;
+                if (width > maxSize || height > maxSize) {
+                  if (width > height) {
+                    height = (height / width) * maxSize;
+                    width = maxSize;
+                  } else {
+                    width = (width / height) * maxSize;
+                    height = maxSize;
+                  }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                let compressedData;
+                if (
+                  file.type === 'image/png' ||
+                  file.type === 'image/gif' ||
+                  file.type === 'image/webp'
+                ) {
+                  compressedData = canvas.toDataURL('image/png');
+                } else {
+                  compressedData = canvas.toDataURL('image/jpeg', 0.8);
+                }
+
+                document.getElementById('categoryIcon').value = compressedData;
+                document.getElementById('categoryPreviewImage').src =
+                  compressedData;
+                document.getElementById('categoryPreviewImage').style.display =
+                  'block';
+                document.getElementById('categoryUploadContent').style.display =
+                  'none';
+              } catch (error) {
+                console.error('ERROR in canvas processing:', error);
+                alert('Помилка при обробці зображення: ' + error.message);
+              }
+            };
+
+            img.onerror = function (error) {
+              console.error('ERROR: Image failed to load');
+              alert('Не вдалося завантажити зображення. Спробуйте інший файл.');
+            };
+
+            img.src = imageData;
+          } catch (error) {
+            console.error('ERROR in onload handler:', error);
+            alert('Помилка при обробці зображення: ' + error.message);
+          }
+        };
+
+        try {
+          reader.readAsDataURL(file);
+        } catch (error) {
+          console.error('ERROR calling readAsDataURL:', error);
+          alert('Помилка при читанні файлу: ' + error.message);
+        }
+      }
+
+      // Оновлення селектора категорій
+      function updateCategorySelect() {
+        const select = document.getElementById('categorySelect');
+        select.innerHTML = '<option value="">Оберіть категорію</option>';
+        Object.keys(achievements).forEach((key) => {
+          const option = document.createElement('option');
+          option.value = key;
+          option.textContent = achievements[key].title;
+          select.appendChild(option);
+        });
+      }
+
+      // Відкрити модальне вікно додавання досягнення
+      function openAddModal() {
+        document.getElementById('formTitle').textContent = 'Додати досягнення';
+        document.getElementById('achievementForm').reset();
+        document.getElementById('achievementId').value = '';
+        document.getElementById('editingCategory').value = '';
+        document.getElementById('achievementImage').value = '';
+        document.getElementById('previewImage').style.display = 'none';
+        document.getElementById('previewImage').src = '';
+        document.getElementById('uploadContent').style.display = 'block';
+        document.getElementById('uploadContent').innerHTML = `
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Натисніть, щоб завантажити зображення<br>або оберіть емодзі нижче</div>
+            `;
+        updateCategorySelect();
+
+        // Автоматично вибираємо першу категорію
+        const categorySelect = document.getElementById('categorySelect');
+        if (categorySelect.options.length > 0) {
+          categorySelect.selectedIndex = 0;
+        }
+
+        initEmojiPicker();
+        document.getElementById('formModal').classList.add('active');
+      }
+
+      // Відкрити модальне вікно редагування
+      function openEditModal(categoryKey, achievementId) {
+        const category = achievements[categoryKey];
+        const achievement = category.items.find((a) => a.id === achievementId);
+
+        if (achievement) {
+          document.getElementById('formTitle').textContent =
+            'Редагувати досягнення';
+
+          // Спочатку оновлюємо список категорій
+          updateCategorySelect();
+
+          // Потім встановлюємо поточну категорію
+          document.getElementById('categorySelect').value = categoryKey;
+          document.getElementById('achievementName').value = achievement.name;
+          document.getElementById('achievementDescription').value =
+            achievement.description || '';
+          document.getElementById('achievementId').value = achievement.id;
+          document.getElementById('editingCategory').value = categoryKey;
+          document.getElementById('achievementImage').value =
+            achievement.image || achievement.icon || '';
+
+          // Відображення поточної іконки/зображення
+          if (achievement.image && achievement.image.startsWith('data:')) {
+            document.getElementById('previewImage').src = achievement.image;
+            document.getElementById('previewImage').style.display = 'block';
+            document.getElementById('uploadContent').style.display = 'none';
+          } else if (achievement.icon) {
+            document.getElementById('uploadContent').innerHTML = `
+                        <div style="font-size: 4em; margin: 20px 0;">${achievement.icon}</div>
+                        <div class="upload-text">Поточна іконка (натисніть для зміни)</div>
+                    `;
+            document.getElementById('uploadContent').style.display = 'block';
+            document.getElementById('previewImage').style.display = 'none';
+          } else {
+            document.getElementById('uploadContent').innerHTML = `
+                        <div class="upload-icon">📷</div>
+                        <div class="upload-text">Немає іконки (натисніть для додавання)</div>
+                    `;
+            document.getElementById('uploadContent').style.display = 'block';
+            document.getElementById('previewImage').style.display = 'none';
+          }
+
+          initEmojiPicker();
+          document.getElementById('formModal').classList.add('active');
+        }
+      }
+
+      // Закрити форму досягнення
+      function closeFormModal() {
+        document.getElementById('formModal').classList.remove('active');
+      }
+
+      // Зберегти досягнення
+      function saveAchievement(event) {
+        event.preventDefault();
+
+        const categoryKey = document.getElementById('categorySelect').value;
+        const name = document.getElementById('achievementName').value;
+        const description =
+          document.getElementById('achievementDescription').value || '';
+        const achievementId = document.getElementById('achievementId').value;
+        const editingCategory =
+          document.getElementById('editingCategory').value;
+        const image = document.getElementById('achievementImage').value;
+
+        if (!categoryKey) {
+          alert('Будь ласка, оберіть категорію');
+          return;
+        }
+
+        if (achievementId) {
+          // Редагування існуючого досягнення
+          const oldCategory = achievements[editingCategory];
+          const achievementIndex = oldCategory.items.findIndex(
+            (a) => a.id === parseInt(achievementId),
+          );
+
+          if (achievementIndex !== -1) {
+            const achievement = oldCategory.items[achievementIndex];
+
+            // Якщо категорія змінилася, переміщуємо досягнення
+            if (editingCategory !== categoryKey) {
+              oldCategory.items.splice(achievementIndex, 1);
+              achievements[categoryKey].items.push({
+                id: achievement.id,
+                icon: image && !image.startsWith('data:') ? image : '',
+                image: image && image.startsWith('data:') ? image : '',
+                name: name,
+                description: description,
+                unlocked: achievement.unlocked,
+              });
+            } else {
+              // Оновлюємо в тій же категорії
+              achievement.name = name;
+              achievement.description = description;
+              if (image) {
+                if (image.startsWith('data:')) {
+                  achievement.image = image;
+                  achievement.icon = '';
+                } else {
+                  achievement.icon = image;
+                  achievement.image = '';
+                }
+              } else {
+                achievement.icon = '';
+                achievement.image = '';
+              }
+            }
+          }
+        } else {
+          // Додавання нового досягнення
+          const newAchievement = {
+            id: nextId++,
+            icon: image && !image.startsWith('data:') ? image : '',
+            image: image && image.startsWith('data:') ? image : '',
+            name: name,
+            description: description,
+            unlocked: false,
+          };
+
+          achievements[categoryKey].items.push(newAchievement);
+        }
+
+        saveProgress();
+        closeFormModal();
+        renderAchievements();
+      }
+
+      // Видалити досягнення
+      function deleteAchievement(categoryKey, achievementId) {
+        const category = achievements[categoryKey];
+        const achievement = category.items.find((a) => a.id === achievementId);
+
+        document.getElementById('confirmDeleteTitle').textContent =
+          'Видалити досягнення?';
+        document.getElementById('confirmDeleteMessage').textContent =
+          `Ви впевнені, що хочете видалити "${achievement.name}"?`;
+
+        pendingDeleteAction = () => {
+          const index = category.items.findIndex((a) => a.id === achievementId);
+
+          if (index !== -1) {
+            category.items.splice(index, 1);
+            saveProgress();
+            renderAchievements();
+          }
+        };
+
+        document.getElementById('confirmDeleteModal').classList.add('active');
+      }
+
+      // === КАТЕГОРІЇ ===
+
+      // Відкрити модальне вікно додавання категорії
+      function openCategoryModal() {
+        document.getElementById('categoryFormTitle').textContent =
+          'Додати категорію';
+        document.getElementById('categoryForm').reset();
+        document.getElementById('categoryKey').value = '';
+        document.getElementById('categoryIcon').value = '';
+        document.getElementById('categoryPreviewImage').style.display = 'none';
+        document.getElementById('categoryPreviewImage').src = '';
+        document.getElementById('categoryUploadContent').style.display =
+          'block';
+        document.getElementById('categoryUploadContent').innerHTML = `
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Натисніть, щоб завантажити зображення<br>або оберіть емодзі нижче</div>
+            `;
+        initCategoryEmojiPicker();
+        document.getElementById('categoryModal').classList.add('active');
+      }
+
+      // Відкрити модальне вікно редагування категорії
+      function openEditCategoryModal(categoryKey) {
+        const category = achievements[categoryKey];
+
+        if (category) {
+          document.getElementById('categoryFormTitle').textContent =
+            'Редагувати категорію';
+          document.getElementById('categoryName').value = category.title;
+          document.getElementById('categoryKey').value = categoryKey;
+          document.getElementById('categoryIcon').value = category.icon;
+
+          // Відображення поточної іконки/зображення
+          if (category.icon && category.icon.startsWith('data:')) {
+            document.getElementById('categoryPreviewImage').src = category.icon;
+            document.getElementById('categoryPreviewImage').style.display =
+              'block';
+            document.getElementById('categoryUploadContent').style.display =
+              'none';
+          } else {
+            document.getElementById('categoryUploadContent').innerHTML = `
+                        <div style="font-size: 4em; margin: 20px 0;">${category.icon}</div>
+                        <div class="upload-text">Поточна іконка (натисніть для зміни)</div>
+                    `;
+            document.getElementById('categoryUploadContent').style.display =
+              'block';
+            document.getElementById('categoryPreviewImage').style.display =
+              'none';
+          }
+
+          initCategoryEmojiPicker();
+          document.getElementById('categoryModal').classList.add('active');
+        }
+      }
+
+      // Закрити форму категорії
+      function closeCategoryModal() {
+        document.getElementById('categoryModal').classList.remove('active');
+      }
+
+      // Зберегти категорію
+      function saveCategory(event) {
+        event.preventDefault();
+
+        const categoryName = document.getElementById('categoryName').value;
+        const categoryKey = document.getElementById('categoryKey').value;
+        const categoryIcon = document.getElementById('categoryIcon').value;
+
+        if (!categoryIcon) {
+          alert('Будь ласка, оберіть іконку або завантажте зображення');
+          return;
+        }
+
+        if (categoryKey) {
+          // Редагування існуючої категорії
+          if (achievements[categoryKey]) {
+            achievements[categoryKey].title = categoryName;
+            achievements[categoryKey].icon = categoryIcon;
+          }
+        } else {
+          // Додавання нової категорії
+          const newKey = categoryName
+            .toLowerCase()
+            .replace(/[^a-z0-9а-я]/g, '_');
+
+          if (achievements[newKey]) {
+            alert('Категорія з такою назвою вже існує');
+            return;
+          }
+
+          // Визначаємо максимальний order
+          const maxOrder = Math.max(
+            ...Object.values(achievements).map((c) => c.order || 0),
+            -1,
+          );
+
+          achievements[newKey] = {
+            title: categoryName,
+            icon: categoryIcon,
+            collapsed: true,
+            order: maxOrder + 1,
+            items: [],
+          };
+        }
+
+        saveProgress();
+        closeCategoryModal();
+        renderAchievements();
+      }
+
+      // Видалити категорію
+      function deleteCategory(categoryKey) {
+        const category = achievements[categoryKey];
+        const hasAchievements = category.items.length > 0;
+
+        document.getElementById('confirmDeleteTitle').textContent =
+          'Видалити категорію?';
+
+        let message = `Ви впевнені, що хочете видалити категорію "${category.title}"?`;
+        if (hasAchievements) {
+          message = `Категорія "${category.title}" містить ${category.items.length} досягнень. Всі досягнення будуть видалені. Продовжити?`;
+        }
+
+        document.getElementById('confirmDeleteMessage').textContent = message;
+
+        pendingDeleteAction = () => {
+          delete achievements[categoryKey];
+          saveProgress();
+          renderAchievements();
+        };
+
+        document.getElementById('confirmDeleteModal').classList.add('active');
+      }
+
+      // Закрити модальне вікно підтвердження видалення
+      function closeConfirmDelete() {
+        document
+          .getElementById('confirmDeleteModal')
+          .classList.remove('active');
+        pendingDeleteAction = null;
+      }
+
+      // Підтвердити видалення
+      function confirmDelete() {
+        if (pendingDeleteAction) {
+          pendingDeleteAction();
+          pendingDeleteAction = null;
+        }
+        closeConfirmDelete();
+      }
+
+      // === СОРТУВАННЯ ===
+
+      // Сортування категорій за порядком
+      function getSortedCategoryKeys() {
+        return Object.keys(achievements).sort((a, b) => {
+          const orderA =
+            achievements[a].order !== undefined ? achievements[a].order : 999;
+          const orderB =
+            achievements[b].order !== undefined ? achievements[b].order : 999;
+          return orderA - orderB;
+        });
+      }
+
+      // Переміщення категорії вгору
+      function moveCategoryUp(categoryKey) {
+        const sortedKeys = getSortedCategoryKeys();
+        const currentIndex = sortedKeys.indexOf(categoryKey);
+
+        if (currentIndex > 0) {
+          const prevKey = sortedKeys[currentIndex - 1];
+          const temp = achievements[categoryKey].order;
+          achievements[categoryKey].order = achievements[prevKey].order;
+          achievements[prevKey].order = temp;
+
+          saveProgress();
+          renderAchievements();
+        }
+      }
+
+      // Переміщення категорії вниз
+      function moveCategoryDown(categoryKey) {
+        const sortedKeys = getSortedCategoryKeys();
+        const currentIndex = sortedKeys.indexOf(categoryKey);
+
+        if (currentIndex < sortedKeys.length - 1) {
+          const nextKey = sortedKeys[currentIndex + 1];
+          const temp = achievements[categoryKey].order;
+          achievements[categoryKey].order = achievements[nextKey].order;
+          achievements[nextKey].order = temp;
+
+          saveProgress();
+          renderAchievements();
+        }
+      }
+
+      // Переміщення досягнення вгору
+      function moveAchievementUp(categoryKey, achievementId) {
+        const category = achievements[categoryKey];
+        const index = category.items.findIndex((a) => a.id === achievementId);
+
+        if (index > 0) {
+          const temp = category.items[index];
+          category.items[index] = category.items[index - 1];
+          category.items[index - 1] = temp;
+
+          saveProgress();
+          renderAchievements();
+        }
+      }
+
+      // Переміщення досягнення вниз
+      function moveAchievementDown(categoryKey, achievementId) {
+        const category = achievements[categoryKey];
+        const index = category.items.findIndex((a) => a.id === achievementId);
+
+        if (index < category.items.length - 1) {
+          const temp = category.items[index];
+          category.items[index] = category.items[index + 1];
+          category.items[index + 1] = temp;
+
+          saveProgress();
+          renderAchievements();
+        }
+      }
+
+      // Перемікання згортання категорії
+      function toggleCategoryCollapse(categoryKey) {
+        achievements[categoryKey].collapsed =
+          !achievements[categoryKey].collapsed;
+        saveProgress();
+        renderAchievements();
+      }
+
+      // Відображення категорій та досягнень
+      function renderAchievements() {
+        const container = document.getElementById('categoriesContainer');
+        container.innerHTML = '';
+
+        const sortedKeys = getSortedCategoryKeys();
+
+        sortedKeys.forEach((categoryKey, catIndex) => {
+          const category = achievements[categoryKey];
+          const categoryDiv = document.createElement('div');
+          categoryDiv.className = 'category';
+          if (category.collapsed) {
+            categoryDiv.classList.add('collapsed');
+          }
+
+          // Створюємо заголовок категорії
+          const categoryHeader = document.createElement('div');
+          categoryHeader.className = 'category-header';
+
+          // Перший ряд - кнопка згортання, іконка та назва
+          const categoryHeaderTop = document.createElement('div');
+          categoryHeaderTop.className = 'category-header-top';
+          categoryHeaderTop.onclick = () => toggleCategoryCollapse(categoryKey);
+
+          // Кнопка згортання/розгортання
+          const collapseBtn = document.createElement('button');
+          collapseBtn.className = 'collapse-toggle';
+          collapseBtn.innerHTML = '▼';
+          collapseBtn.title = category.collapsed ? 'Розгорнути' : 'Згорнути';
+          collapseBtn.onclick = (e) => {
+            e.stopPropagation();
+            toggleCategoryCollapse(categoryKey);
+          };
+          categoryHeaderTop.appendChild(collapseBtn);
+
+          // Іконка категорії (клікабельна для перегляду)
+          if (category.icon && category.icon.startsWith('data:')) {
+            const img = document.createElement('img');
+            img.src = category.icon;
+            img.className = 'custom-image';
+            img.style.cursor = 'zoom-in';
+            img.onclick = (e) => {
+              e.stopPropagation();
+              openImageModal(category.icon);
+            };
+            categoryHeaderTop.appendChild(img);
+          } else {
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'category-icon';
+            iconSpan.textContent = category.icon || '📁';
+            categoryHeaderTop.appendChild(iconSpan);
+          }
+
+          // Назва категорії
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'category-title';
+          titleSpan.textContent = category.title;
+          categoryHeaderTop.appendChild(titleSpan);
+
+          categoryHeader.appendChild(categoryHeaderTop);
+
+          // Другий ряд - кнопки управління
+          const categoryControls = document.createElement('div');
+          categoryControls.className = 'category-controls';
+
+          // Кнопки сортування
+          const sortControls = document.createElement('div');
+          sortControls.className = 'sort-controls';
+
+          const upBtn = document.createElement('button');
+          upBtn.className = 'sort-btn';
+          upBtn.innerHTML = '⬆️';
+          upBtn.title = 'Перемістити вгору';
+          upBtn.disabled = catIndex === 0;
+          upBtn.onclick = (e) => {
+            e.stopPropagation();
+            moveCategoryUp(categoryKey);
+          };
+          sortControls.appendChild(upBtn);
+
+          const downBtn = document.createElement('button');
+          downBtn.className = 'sort-btn';
+          downBtn.innerHTML = '⬇️';
+          downBtn.title = 'Перемістити вниз';
+          downBtn.disabled = catIndex === sortedKeys.length - 1;
+          downBtn.onclick = (e) => {
+            e.stopPropagation();
+            moveCategoryDown(categoryKey);
+          };
+          sortControls.appendChild(downBtn);
+
+          categoryControls.appendChild(sortControls);
+
+          const editBtn = document.createElement('button');
+          editBtn.className = 'category-action-btn';
+          editBtn.innerHTML = '✏️';
+          editBtn.title = 'Редагувати категорію';
+          editBtn.onclick = (e) => {
+            e.stopPropagation();
+            openEditCategoryModal(categoryKey);
+          };
+          categoryControls.appendChild(editBtn);
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'category-action-btn delete';
+          deleteBtn.innerHTML = '🗑️';
+          deleteBtn.title = 'Видалити категорію';
+          deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            deleteCategory(categoryKey);
+            return false;
+          };
+          categoryControls.appendChild(deleteBtn);
+
+          categoryHeader.appendChild(categoryControls);
+          categoryDiv.appendChild(categoryHeader);
+
+          // Контейнер для досягнень
+          const itemsContainer = document.createElement('div');
+          itemsContainer.className = 'category-items';
+
+          // Додаємо досягнення
+          category.items.forEach((achievement, achIndex) => {
+            const achievementDiv = document.createElement('div');
+            achievementDiv.className = `achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`;
+
+            // ПЕРШИЙ РЯД - основний контент
+            const achievementMain = document.createElement('div');
+            achievementMain.className = 'achievement-main';
+            achievementMain.onclick = () =>
+              toggleAchievement(categoryKey, achievement.id);
+
+            // Іконка досягнення (клікабельна для перегляду)
+            if (achievement.image && achievement.image.startsWith('data:')) {
+              const img = document.createElement('img');
+              img.src = achievement.image;
+              img.className = 'custom-image achievement-icon';
+              img.style.cursor = 'zoom-in';
+              img.onclick = (e) => {
+                e.stopPropagation();
+                openImageModal(achievement.image);
+              };
+              achievementMain.appendChild(img);
+            } else if (achievement.icon) {
+              const iconSpan = document.createElement('span');
+              iconSpan.className = 'achievement-icon';
+              iconSpan.textContent = achievement.icon;
+              achievementMain.appendChild(iconSpan);
+            } else {
+              const iconSpan = document.createElement('span');
+              iconSpan.className = 'achievement-icon';
+              iconSpan.textContent = '⭐';
+              achievementMain.appendChild(iconSpan);
+            }
+
+            // Контент досягнення
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'achievement-content';
+
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'achievement-name';
+            nameDiv.textContent = achievement.name;
+            contentDiv.appendChild(nameDiv);
+
+            if (achievement.description) {
+              const descDiv = document.createElement('div');
+              descDiv.className = 'achievement-description';
+              descDiv.textContent = achievement.description;
+              contentDiv.appendChild(descDiv);
+            }
+
+            achievementMain.appendChild(contentDiv);
+            achievementDiv.appendChild(achievementMain);
+
+            // ДРУГИЙ РЯД - всі кнопки управління
+            const achievementControls = document.createElement('div');
+            achievementControls.className = 'achievement-controls';
+
+            // Кнопки сортування
+            const sortControls = document.createElement('div');
+            sortControls.className = 'sort-controls';
+
+            const upBtn = document.createElement('button');
+            upBtn.className = 'sort-btn';
+            upBtn.innerHTML = '⬆️';
+            upBtn.title = 'Перемістити вгору';
+            upBtn.disabled = achIndex === 0;
+            upBtn.onclick = (e) => {
+              e.stopPropagation();
+              moveAchievementUp(categoryKey, achievement.id);
+            };
+            sortControls.appendChild(upBtn);
+
+            const downBtn = document.createElement('button');
+            downBtn.className = 'sort-btn';
+            downBtn.innerHTML = '⬇️';
+            upBtn.title = 'Перемістити вниз';
+            downBtn.disabled = achIndex === category.items.length - 1;
+            downBtn.onclick = (e) => {
+              e.stopPropagation();
+              moveAchievementDown(categoryKey, achievement.id);
+            };
+            sortControls.appendChild(downBtn);
+
+            achievementControls.appendChild(sortControls);
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'action-btn edit-btn';
+            editBtn.innerHTML = '✏️';
+            editBtn.title = 'Редагувати';
+            editBtn.onclick = (e) => {
+              e.stopPropagation();
+              openEditModal(categoryKey, achievement.id);
+            };
+            achievementControls.appendChild(editBtn);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'action-btn delete-btn';
+            deleteBtn.innerHTML = '🗑️';
+            deleteBtn.title = 'Видалити';
+            deleteBtn.onclick = (e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              deleteAchievement(categoryKey, achievement.id);
+              return false;
+            };
+            achievementControls.appendChild(deleteBtn);
+
+            achievementDiv.appendChild(achievementControls);
+            itemsContainer.appendChild(achievementDiv);
+          });
+
+          categoryDiv.appendChild(itemsContainer);
+          container.appendChild(categoryDiv);
+        });
+
+        updateStats();
+      }
+
+      // Перемикання статусу досягнення
+      function toggleAchievement(categoryKey, achievementId) {
+        const category = achievements[categoryKey];
+        const achievement = category.items.find((a) => a.id === achievementId);
+
+        if (achievement) {
+          const wasUnlocked = achievement.unlocked;
+          achievement.unlocked = !achievement.unlocked;
+
+          if (achievement.unlocked && !wasUnlocked) {
+            showUnlockModal(achievement);
+          }
+
+          saveProgress();
+          renderAchievements();
+        }
+      }
+
+      // Показати модальне вікно
+      function showUnlockModal(achievement) {
+        const modal = document.getElementById('achievementModal');
+        const iconDisplay = achievement.image
+          ? `<img src="${achievement.image}" style="max-width: 100px; max-height: 100px; border-radius: 10px;">`
+          : achievement.icon || '🎉';
+        document.getElementById('modalIcon').innerHTML = iconDisplay;
+        document.getElementById('modalTitle').textContent = achievement.name;
+        document.getElementById('modalDescription').textContent =
+          achievement.description || '';
+        modal.classList.add('active');
+      }
+
+      // Закрити модальне вікно
+      function closeModal() {
+        document.getElementById('achievementModal').classList.remove('active');
+      }
+
+      // Відкрити зображення у повний розмір
+      function openImageModal(imageSrc) {
+        document.getElementById('imageModalImg').src = imageSrc;
+        document.getElementById('imageModal').classList.add('active');
+      }
+
+      // Закрити модальне вікно зображення
+      function closeImageModal() {
+        document.getElementById('imageModal').classList.remove('active');
+      }
+
+      // Оновлення статистики
+      function updateStats() {
+        let unlockedCount = 0;
+        let totalCount = 0;
+
+        Object.keys(achievements).forEach((categoryKey) => {
+          achievements[categoryKey].items.forEach((achievement) => {
+            totalCount++;
+            if (achievement.unlocked) {
+              unlockedCount++;
+            }
+          });
+        });
+
+        document.getElementById('unlockedCount').textContent = unlockedCount;
+        document.getElementById('totalCount').textContent = totalCount;
+      }
+
+      // === ЕКСПОРТ/ІМПОРТ ДАНИХ ===
+
+      // Експорт даних у JSON файл
+      function exportData() {
+        try {
+          const data = {
+            achievements: achievements,
+            nextId: nextId,
+            exportDate: new Date().toISOString(),
+            version: '1.0',
+          };
+
+          const dataStr = JSON.stringify(data, null, 2);
+          const fileName =
+            'life-achievements-' +
+            new Date().toISOString().split('T')[0] +
+            '.json';
+
+          // Перевірка чи це iOS/Mobile Safari
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+          if (isIOS) {
+            // Для iOS: використовуємо Share API якщо доступний
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const file = new File([blob], fileName, {
+              type: 'application/json',
+            });
+
+            if (
+              navigator.share &&
+              navigator.canShare &&
+              navigator.canShare({ files: [file] })
+            ) {
+              navigator
+                .share({
+                  files: [file],
+                  title: 'Експорт досягнень',
+                  text: 'Резервна копія моїх досягнень',
+                })
+                .then(() => {
+                  // Share completed
+                })
+                .catch((error) => {
+                  if (error.name !== 'AbortError') {
+                    console.error('Share error:', error);
+                    // Fallback: показати дані для копіювання
+                    showExportDataModal(dataStr, fileName);
+                  }
+                });
+            } else {
+              // Fallback: показати дані для копіювання
+              showExportDataModal(dataStr, fileName);
+            }
+          } else {
+            // Для інших платформ: звичайне завантаження
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            alert('✅ Дані успішно експортовано!\n\nФайл: ' + fileName);
+          }
+        } catch (error) {
+          console.error('Export error:', error);
+          alert('Помилка експорту: ' + error.message);
+        }
+      }
+
+      // Показати модальне вікно з даними для копіювання (для iOS fallback)
+      function showExportDataModal(dataStr, fileName) {
+        const modal = document.createElement('div');
+        modal.style.cssText =
+          'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:10000;display:flex;justify-content:center;align-items:center;padding:20px;';
+
+        const content = document.createElement('div');
+        content.style.cssText =
+          'background:white;border-radius:15px;padding:20px;max-width:500px;width:100%;max-height:80vh;overflow:auto;';
+
+        const title = document.createElement('h2');
+        title.textContent = '📥 Експорт даних';
+        title.style.cssText = 'color:#667eea;margin-top:0;';
+        content.appendChild(title);
+
+        const instructions = document.createElement('p');
+        instructions.textContent =
+          'Скопіюйте текст нижче та збережіть у файл "' + fileName + '":';
+        instructions.style.cssText = 'color:#666;margin-bottom:15px;';
+        content.appendChild(instructions);
+
+        const textarea = document.createElement('textarea');
+        textarea.value = dataStr;
+        textarea.readOnly = true;
+        textarea.style.cssText =
+          'width:100%;min-height:200px;padding:10px;border:2px solid #667eea;border-radius:8px;font-family:monospace;font-size:12px;margin-bottom:15px;box-sizing:border-box;';
+        content.appendChild(textarea);
+
+        const btnContainer = document.createElement('div');
+        btnContainer.style.cssText = 'display:flex;gap:10px;';
+
+        const copyBtn = document.createElement('button');
+        copyBtn.textContent = '📋 Копіювати';
+        copyBtn.style.cssText =
+          'flex:1;background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;border:none;padding:12px;border-radius:8px;font-size:16px;cursor:pointer;';
+        copyBtn.onclick = () => {
+          textarea.select();
+          document.execCommand('copy');
+          copyBtn.textContent = '✅ Скопійовано!';
+          setTimeout(() => {
+            copyBtn.textContent = '📋 Копіювати';
+          }, 2000);
+        };
+        btnContainer.appendChild(copyBtn);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Закрити';
+        closeBtn.style.cssText =
+          'flex:1;background:#e0e0e0;color:#333;border:none;padding:12px;border-radius:8px;font-size:16px;cursor:pointer;';
+        closeBtn.onclick = () => {
+          document.body.removeChild(modal);
+        };
+        btnContainer.appendChild(closeBtn);
+
+        content.appendChild(btnContainer);
+        modal.appendChild(content);
+
+        modal.onclick = (e) => {
+          if (e.target === modal) {
+            document.body.removeChild(modal);
+          }
+        };
+
+        document.body.appendChild(modal);
+        textarea.select();
+      }
+
+      // Імпорт даних з JSON файлу
+      function importData() {
+        document.getElementById('confirmImportModal').classList.add('active');
+      }
+
+      // Закрити модальне вікно підтвердження імпорту
+      function closeConfirmImport() {
+        document
+          .getElementById('confirmImportModal')
+          .classList.remove('active');
+      }
+
+      // Підтвердити імпорт
+      function confirmImport() {
+        closeConfirmImport();
+        document.getElementById('importFile').click();
+      }
+
+      // Обробка імпорту файлу
+      function handleImportFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          try {
+            const data = JSON.parse(e.target.result);
+
+            // Перевірка структури даних
+            if (!data.achievements || !data.nextId) {
+              throw new Error('Невірний формат файлу');
+            }
+
+            // Відновлення даних
+            achievements = data.achievements;
+            nextId = data.nextId;
+
+            saveProgress();
+            renderAchievements();
+
+            alert(
+              '✅ Дані успішно імпортовано!\n\nДата експорту: ' +
+                (data.exportDate
+                  ? new Date(data.exportDate).toLocaleString('uk-UA')
+                  : 'невідома'),
+            );
+          } catch (error) {
+            console.error('Import error:', error);
+            alert(
+              'Помилка імпорту: ' +
+                error.message +
+                '\n\nПереконайтеся що файл не пошкоджений.',
+            );
+          }
+        };
+
+        reader.onerror = function () {
+          alert('Помилка читання файлу');
+        };
+
+        reader.readAsText(file);
+
+        // Очищаємо input для можливості імпорту того самого файлу знову
+        event.target.value = '';
+      }
+
+      // === СКИДАННЯ ДАНИХ ===
+
+      // Відкрити модальне вікно підтвердження скидання
+      function openConfirmReset() {
+        document.getElementById('confirmResetModal').classList.add('active');
+      }
+
+      // Закрити модальне вікно підтвердження скидання
+      function closeConfirmReset() {
+        document.getElementById('confirmResetModal').classList.remove('active');
+      }
+
+      // Підтвердити скидання всіх даних
+      function confirmReset() {
+        // Видаляємо всі збережені дані
+        localStorage.removeItem('lifeAchievements');
+
+        // Перезавантажуємо сторінку для повного скидання
+        location.reload();
+      }
+
+      // Закриття модальних вікон по кліку на фон
+      document
+        .getElementById('formModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeFormModal();
+          }
+        });
+
+      document
+        .getElementById('categoryModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeCategoryModal();
+          }
+        });
+
+      document
+        .getElementById('achievementModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
+
+      document
+        .getElementById('confirmResetModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeConfirmReset();
+          }
+        });
+
+      document
+        .getElementById('confirmDeleteModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeConfirmDelete();
+          }
+        });
+
+      document
+        .getElementById('storageInfoModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeStorageInfo();
+          }
+        });
+
+      document
+        .getElementById('confirmImportModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeConfirmImport();
+          }
+        });
+
+      // Settings modal handlers and utilities
+      function openSettingsModal() {
+        document.getElementById('themeColor1').value =
+          settings.color1 || '#667eea';
+        document.getElementById('themeColor2').value =
+          settings.color2 || '#764ba2';
+        document.getElementById('themeAngle').value = settings.angle || 135;
+        updateGradientPreview();
+        document.getElementById('settingsModal').classList.add('active');
+      }
+
+      function closeSettingsModal() {
+        document.getElementById('settingsModal').classList.remove('active');
+      }
+
+      function updateGradientPreview() {
+        const c1 = document.getElementById('themeColor1').value;
+        const c2 = document.getElementById('themeColor2').value;
+        const angle = document.getElementById('themeAngle').value || 135;
+        const preview = document.getElementById('gradientPreview');
+        if (preview) {
+          preview.style.background = `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 100%)`;
+        }
+      }
+
+      document
+        .getElementById('themeColor1')
+        .addEventListener('input', updateGradientPreview);
+      document
+        .getElementById('themeColor2')
+        .addEventListener('input', updateGradientPreview);
+      document
+        .getElementById('themeAngle')
+        .addEventListener('input', updateGradientPreview);
+
+      function saveSettings(e) {
+        e.preventDefault();
+        const c1 = document.getElementById('themeColor1').value;
+        const c2 = document.getElementById('themeColor2').value;
+        const angle =
+          parseInt(document.getElementById('themeAngle').value, 10) || 135;
+        settings.color1 = c1;
+        settings.color2 = c2;
+        settings.angle = angle;
+        settings.useGradient = true;
+        applySettings();
+        saveProgress();
+        closeSettingsModal();
+      }
+
+      // Ініціалізація
+      loadProgress();
+      applySettings();
+      renderAchievements();
+    </script>
+
+    <!-- Service Worker Registration для PWA -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('service-worker.js')
+            .then((registration) => {
+              console.log('✅ Service Worker зареєстровано:', registration);
+              // Перевірка оновлень
+              setInterval(() => {
+                registration.update();
+              }, 60000); // Кожну хвилину
+            })
+            .catch((error) => {
+              console.error('❌ Помилка реєстрації Service Worker:', error);
+            });
+        });
+      } else {
+        console.warn('Service Worker не підтримується цим браузером');
+      }
+    </script>
+  </body>
+</html>
