@@ -882,7 +882,7 @@
         style="display: none"
       >
         <button onclick="openCategoryModal()" title="Додати категорію">
-          <strong>📦</strong>
+          <strong>📁</strong>
         </button>
         <button onclick="exportData()" title="Експорт">💾</button>
         <button onclick="importData()" title="Імпорт">📥</button>
@@ -965,7 +965,6 @@
                 onchange="handleImageUpload(event)"
               />
               <div id="uploadContent">
-                <div class="upload-icon">📷</div>
                 <div class="upload-text">
                   Натисніть, щоб завантажити зображення<br />або оберіть емодзі
                   нижче
@@ -1018,7 +1017,7 @@
           </div>
 
           <div class="form-group">
-            <label>Іконка категорії</label>
+            <label>Іконка категорії (необов'язково)</label>
             <div
               class="image-upload-area"
               onclick="document.getElementById('categoryImageUpload').click()"
@@ -1030,7 +1029,6 @@
                 onchange="handleCategoryImageUpload(event)"
               />
               <div id="categoryUploadContent">
-                <div class="upload-icon">📷</div>
                 <div class="upload-text">
                   Натисніть, щоб завантажити зображення<br />або оберіть емодзі
                   нижче
@@ -1276,6 +1274,8 @@
         '📺',
         '🎹',
         '🎺',
+        '📁',
+        '📂',
       ];
 
       let achievements = {
@@ -1628,16 +1628,16 @@
           let status = '';
           let icon = '';
           if (percentage < 50) {
-            status = '✅ Достатньо місця';
+            status = 'Достатньо місця';
             icon = '✅';
           } else if (percentage < 70) {
-            status = '⚠️ Помірне використання';
+            status = 'Помірне використання';
             icon = '⚠️';
           } else if (percentage < 90) {
-            status = '⚠️ Високе використання';
+            status = 'Високе використання';
             icon = '⚠️';
           } else {
-            status = '🚨 КРИТИЧНО!';
+            status = 'КРИТИЧНО!';
             icon = '🚨';
           }
 
@@ -2001,7 +2001,7 @@
         document.getElementById('previewImage').src = '';
         document.getElementById('uploadContent').style.display = 'block';
         document.getElementById('uploadContent').innerHTML = `
-                <div class="upload-icon">📷</div>
+                <div class="upload-icon">🏆</div>
                 <div class="upload-text">Натисніть, щоб завантажити зображення<br>або оберіть емодзі нижче</div>
             `;
         updateCategorySelect();
@@ -2052,7 +2052,7 @@
             document.getElementById('previewImage').style.display = 'none';
           } else {
             document.getElementById('uploadContent').innerHTML = `
-                        <div class="upload-icon">📷</div>
+                        <div class="upload-icon">🏆</div>
                         <div class="upload-text">Немає іконки (натисніть для додавання)</div>
                     `;
             document.getElementById('uploadContent').style.display = 'block';
@@ -2182,7 +2182,7 @@
         document.getElementById('categoryUploadContent').style.display =
           'block';
         document.getElementById('categoryUploadContent').innerHTML = `
-                <div class="upload-icon">📷</div>
+                <div class="upload-icon">📁</div>
                 <div class="upload-text">Натисніть, щоб завантажити зображення<br>або оберіть емодзі нижче</div>
             `;
         initCategoryEmojiPicker();
@@ -2210,6 +2210,7 @@
           } else {
             document.getElementById('categoryUploadContent').innerHTML = `
                         <div style="font-size: 4em; margin: 20px 0;">${category.icon}</div>
+                        <div class="upload-icon">📁</div>
                         <div class="upload-text">Поточна іконка (натисніть для зміни)</div>
                     `;
             document.getElementById('categoryUploadContent').style.display =
@@ -2236,10 +2237,11 @@
         const categoryKey = document.getElementById('categoryKey').value;
         const categoryIcon = document.getElementById('categoryIcon').value;
 
-        if (!categoryIcon) {
-          alert('Будь ласка, оберіть іконку або завантажте зображення');
-          return;
-        }
+        // Якщо іконка не обрана, будує встановлена стандартна при відображенні
+        // if (!categoryIcon) {
+        //   alert('Будь ласка, оберіть іконку або завантажте зображення');
+        //   return;
+        // }
 
         if (categoryKey) {
           // Редагування існуючої категорії
@@ -2448,10 +2450,15 @@
               openImageModal(category.icon);
             };
             categoryHeaderTop.appendChild(img);
+          } else if (category.icon) {
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'category-icon';
+            iconSpan.textContent = category.icon;
+            categoryHeaderTop.appendChild(iconSpan);
           } else {
             const iconSpan = document.createElement('span');
             iconSpan.className = 'category-icon';
-            iconSpan.textContent = category.icon || '📁';
+            iconSpan.textContent = '📁';
             categoryHeaderTop.appendChild(iconSpan);
           }
 
@@ -2554,7 +2561,7 @@
             } else {
               const iconSpan = document.createElement('span');
               iconSpan.className = 'achievement-icon';
-              iconSpan.textContent = '⭐';
+              iconSpan.textContent = '🏆';
               achievementMain.appendChild(iconSpan);
             }
 
