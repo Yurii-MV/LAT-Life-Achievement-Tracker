@@ -2,8 +2,8 @@
   "name": "Life Achievement Tracker",
   "short_name": "LAT",
   "description": "Відзначайте свої успіхи та розвивайтеся!",
-  "start_url": "/index.html",
-  "scope": "/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
@@ -48,7 +48,7 @@
       "name": "Додати досягнення",
       "short_name": "Додати",
       "description": "Швидко додати нове досягнення",
-      "url": "/?action=add",
+      "url": "./?action=add",
       "icons": [
         {
           "src": "appicon.png",

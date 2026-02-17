@@ -1,11 +1,11 @@
 // Service Worker для PWA - Трекер життєвих досягнень
 const CACHE_NAME = 'life-achievements-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/appicon.png',
-  '/appicon.svg',
+  './',
+  './index.html',
+  './manifest.json',
+  './appicon.png',
+  './appicon.svg',
 ];
 
 // Установка service worker та кешування файлів
@@ -89,7 +89,7 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           // Якщо мережа недоступна, повертаємо кешовану сторінку
-          return caches.match('/index.html');
+          return caches.match('./index.html');
         });
     }),
   );
