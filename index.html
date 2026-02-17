@@ -695,6 +695,18 @@
         color: white !important;
       }
 
+      .extra-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .extra-buttons-row {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        align-items: center;
+      }
+
       .sort-controls {
         display: none;
         gap: 3px;
@@ -881,20 +893,23 @@
         id="extraButtons"
         style="display: none"
       >
-        <button onclick="exportData()" title="Експорт">💾</button>
-        <button onclick="importData()" title="Імпорт">📥</button>
-        <br />
-        <button onclick="openCategoryModal()" title="Додати категорію">
-          <strong>📁</strong>
-        </button>
-        <button onclick="checkStorageInfo()" title="Сховище">🗄️</button>
-        <button
-          onclick="openSettingsModal()"
-          id="settingsBtn"
-          title="Налаштування теми"
-        >
-          🎨
-        </button>
+        <div class="extra-buttons-row">
+          <button onclick="exportData()" title="Експорт">💾</button>
+          <button onclick="importData()" title="Імпорт">📥</button>
+        </div>
+        <div class="extra-buttons-row">
+          <button onclick="openCategoryModal()" title="Додати категорію">
+            <strong>📁</strong>
+          </button>
+          <button onclick="checkStorageInfo()" title="Сховище">🗄️</button>
+          <button
+            onclick="openSettingsModal()"
+            id="settingsBtn"
+            title="Налаштування теми"
+          >
+            🎨
+          </button>
+        </div>
       </div>
       <input
         type="file"
