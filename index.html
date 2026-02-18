@@ -39,6 +39,13 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
       }
 
+      .header-logo {
+        width: min(520px, 90%);
+        height: auto;
+        margin-bottom: 10px;
+        filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+      }
+
       .stats {
         display: flex;
         gap: 20px;
@@ -875,8 +882,12 @@
   <body>
     <div class="container">
       <header>
-        <h1>🏆 Life Achievement Tracker</h1>
-        <p>Відзначай ваші успіхи та розвивайтеся!</p>
+        <img
+          src="cuplat.png"
+          alt="Life Achievement Tracker"
+          class="header-logo"
+        />
+        <p>Life Achievement Tracker</p>
       </header>
       <div class="header-actions">
         <button
