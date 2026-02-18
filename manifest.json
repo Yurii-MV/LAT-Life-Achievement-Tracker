@@ -1,6 +1,6 @@
 {
   "name": "Life Achievement Tracker",
-  "short_name": "LAT",
+  "short_name": "Achievements",
   "description": "Відзначайте свої успіхи та розвивайтеся!",
   "start_url": "./index.html",
   "scope": "./",
