@@ -89,6 +89,7 @@
         padding: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         transition: all 0.3s ease;
+        position: relative;
       }
 
       .category.collapsed {
@@ -116,10 +117,12 @@
       }
 
       .category-controls {
-        display: flex;
+        display: none;
         gap: 10px;
         align-items: center;
-        padding-left: 60px;
+        justify-content: center;
+        padding-top: 8px;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
       }
 
       .category.collapsed .category-header {
@@ -242,13 +245,13 @@
       }
 
       .achievement-controls {
-        display: flex;
+        display: none;
         gap: 10px;
         align-items: center;
         justify-content: center;
         margin-top: 8px;
-        padding-top: 8px;
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       }
 
       .achievement.unlocked .achievement-controls {
@@ -257,6 +260,13 @@
 
       .achievement-controls .sort-controls {
         margin-right: 0;
+      }
+
+      .achievement-action-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
       }
 
       .progress-bar {
@@ -435,6 +445,33 @@
         transform: translateY(-225px) scale(1);
       }
 
+      .quick-actions-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      .quick-action-btn {
+        background: var(--app-gradient);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        padding: 14px 10px;
+        cursor: pointer;
+        font-size: 1.15em;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: transform 0.2s ease;
+      }
+
+      .quick-action-btn:hover {
+        transform: translateY(-2px);
+      }
+
       .form-modal {
         display: none;
         position: fixed;
@@ -578,27 +615,23 @@
       }
 
       .action-btn {
-        width: 30px;
-        height: 30px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         border: none;
         background: rgba(255, 255, 255, 0.3);
-        color: white;
+        color: green;
         cursor: pointer;
-        font-size: 0.9em;
+        font-size: 1.05em;
         transition: all 0.2s ease;
-        display: none;
+        display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .edit-mode .action-btn {
-        display: flex;
-      }
-
       .achievement.locked .action-btn {
-        background: rgba(0, 0, 0, 0.1);
-        color: #666;
+        background: rgba(102, 126, 234, 0.1);
+        color: green;
       }
 
       .action-btn:hover {
@@ -606,11 +639,22 @@
       }
 
       .edit-btn:hover {
-        background: #4caf50;
+        background: #b9e90b;
       }
 
-      .delete-btn:hover {
+      .achievement.locked .delete-btn {
+        background: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+      }
+
+      .achievement.unlocked .action-btn.delete-btn:hover {
         background: #f44336;
+        color: white;
+      }
+
+      .achievement.locked .delete-btn:hover {
+        background: #f44336;
+        color: white;
       }
 
       .custom-image {
@@ -623,14 +667,10 @@
 
       .sort-btn {
         background: rgba(102, 126, 234, 0.1);
-        color: #667eea;
+        color: green;
         border: none;
-        padding: 6px 10px;
+        padding: 0;
         border-radius: 6px;
-        cursor: pointer;
-        font-size: 0.85em;
-        transition: all 0.2s ease;
-        margin-right: 5px;
       }
 
       .sort-btn:hover {
@@ -641,6 +681,11 @@
       .sort-btn:disabled {
         opacity: 0.3;
         cursor: not-allowed;
+      }
+
+      .achievement.unlocked .sort-btn {
+        background: rgba(255, 255, 255, 0.3);
+        color: green;
       }
 
       .category-actions {
@@ -654,18 +699,46 @@
         background: rgba(102, 126, 234, 0.1);
         color: #667eea;
         border: none;
-        padding: 8px 12px;
-        border-radius: 6px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 50%;
         cursor: pointer;
-        font-size: 1.2em;
+        font-size: 1.05em;
         transition: all 0.2s ease;
-        display: none;
+        display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 36px;
       }
 
-      .edit-mode .category-action-btn {
+      .edit-corner-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 24px;
+        height: 24px;
+        border: none;
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+        background: transparent;
+        color: #111;
+        font-size: 0.75em;
+        font-weight: bold;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+      }
+
+      .edit-corner-btn:hover {
+        color: #000;
+        transform: scale(1.05);
+      }
+
+      .category.show-edit .category-controls,
+      .achievement.show-edit .achievement-controls {
         display: flex;
       }
 
@@ -706,63 +779,6 @@
 
       .full-width {
         grid-column: 1 / -1;
-      }
-
-      .header-actions {
-        text-align: center;
-        margin-bottom: 20px;
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .header-actions button {
-        background: var(--app-gradient);
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 25px;
-        cursor: pointer;
-        font-size: 1em;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-      }
-
-      .header-actions button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-      }
-
-      .settings-toggle-btn {
-        background: rgba(102, 126, 234, 0.15) !important;
-        color: #667eea !important;
-      }
-
-      .settings-toggle-btn.active {
-        background: var(--app-gradient) !important;
-        color: white !important;
-      }
-
-      .extra-buttons {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .extra-buttons-row {
-        display: flex;
-        gap: 15px;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .sort-controls {
-        display: none;
-        gap: 3px;
-      }
-
-      .edit-mode .sort-controls {
-        display: flex;
       }
 
       .warning-text {
@@ -937,38 +953,6 @@
         />
         <p>Life Achievement Tracker</p>
       </header>
-      <div class="header-actions">
-        <button
-          class="settings-toggle-btn"
-          onclick="toggleEditMode()"
-          id="editModeBtn"
-        >
-          ⚙️
-        </button>
-      </div>
-      <div
-        class="header-actions extra-buttons"
-        id="extraButtons"
-        style="display: none"
-      >
-        <div class="extra-buttons-row">
-          <button onclick="exportData()" title="Експорт">💾</button>
-          <button onclick="importData()" title="Імпорт">📥</button>
-        </div>
-        <div class="extra-buttons-row">
-          <button onclick="openCategoryModal()" title="Додати категорію">
-            <strong>📁</strong>
-          </button>
-          <button onclick="checkStorageInfo()" title="Сховище">🗄️</button>
-          <button
-            onclick="openSettingsModal()"
-            id="settingsBtn"
-            title="Налаштування теми"
-          >
-            🎨
-          </button>
-        </div>
-      </div>
       <input
         type="file"
         id="importFile"
@@ -1189,6 +1173,55 @@
       </div>
     </div>
 
+    <div class="form-modal" id="quickActionsModal">
+      <div class="form-content">
+        <h2>Інструменти</h2>
+        <div class="quick-actions-grid">
+          <button
+            type="button"
+            class="quick-action-btn"
+            onclick="runQuickAction('export')"
+            title="Експорт"
+          >
+            💾 Експорт
+          </button>
+          <button
+            type="button"
+            class="quick-action-btn"
+            onclick="runQuickAction('import')"
+            title="Імпорт"
+          >
+            📥 Імпорт
+          </button>
+          <button
+            type="button"
+            class="quick-action-btn"
+            onclick="runQuickAction('storage')"
+            title="Сховище"
+          >
+            🗄️ Сховище
+          </button>
+          <button
+            type="button"
+            class="quick-action-btn"
+            onclick="runQuickAction('theme')"
+            title="Налаштування теми"
+          >
+            🎨 Тема
+          </button>
+        </div>
+        <div class="form-buttons" style="margin-top: 18px">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="closeQuickActionsModal()"
+          >
+            Закрити
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="confirm-modal" id="confirmImportModal">
       <div class="confirm-content">
         <div class="confirm-icon">⚠️</div>
@@ -1290,7 +1323,7 @@
       <button
         class="fab-btn fab-sub-btn"
         type="button"
-        onclick="toggleEditMode()"
+        onclick="openQuickActionsModal()"
         title="Налаштування"
         aria-label="Налаштування"
       >
@@ -1627,8 +1660,9 @@
       };
 
       let nextId = 26;
-      let editMode = false;
       let pendingDeleteAction = null;
+      let activeCategoryEditKey = null;
+      let activeAchievementEditKey = null;
 
       let settings = {
         color1: '#667eea',
@@ -1647,29 +1681,6 @@
           }
         } catch (e) {
           console.error('Error applying settings', e);
-        }
-      }
-
-      // Перемикання режиму редагування
-      function toggleEditMode() {
-        editMode = !editMode;
-        const btn = document.getElementById('editModeBtn');
-        const container = document.getElementById('categoriesContainer');
-        const body = document.body;
-        const extraButtons = document.getElementById('extraButtons');
-
-        if (editMode) {
-          btn.classList.add('active');
-          btn.textContent = '✓';
-          container.classList.add('edit-mode');
-          body.classList.add('edit-mode');
-          extraButtons.style.display = 'flex';
-        } else {
-          btn.classList.remove('active');
-          btn.textContent = '⚙️';
-          container.classList.remove('edit-mode');
-          body.classList.remove('edit-mode');
-          extraButtons.style.display = 'none';
         }
       }
 
@@ -2095,8 +2106,30 @@
         });
       }
 
+      function confirmFormModalSwitch(targetModalId) {
+        const activeModal = document.querySelector('.form-modal.active');
+        if (!activeModal || activeModal.id === targetModalId) {
+          return true;
+        }
+
+        const shouldContinue = window.confirm(
+          'У відкритому вікні є незбережені зміни.\n\nПродовжити без збереження та відкрити інше вікно?',
+        );
+
+        if (!shouldContinue) {
+          return false;
+        }
+
+        activeModal.classList.remove('active');
+        return true;
+      }
+
       // Відкрити модальне вікно додавання досягнення
       function openAddModal() {
+        if (!confirmFormModalSwitch('formModal')) {
+          return;
+        }
+
         document.getElementById('formTitle').textContent = 'Додати досягнення';
         document.getElementById('achievementForm').reset();
         document.getElementById('achievementId').value = '';
@@ -2123,6 +2156,10 @@
 
       // Відкрити модальне вікно редагування
       function openEditModal(categoryKey, achievementId) {
+        if (!confirmFormModalSwitch('formModal')) {
+          return;
+        }
+
         const category = achievements[categoryKey];
         const achievement = category.items.find((a) => a.id === achievementId);
 
@@ -2277,6 +2314,10 @@
 
       // Відкрити модальне вікно додавання категорії
       function openCategoryModal() {
+        if (!confirmFormModalSwitch('categoryModal')) {
+          return;
+        }
+
         document.getElementById('categoryFormTitle').textContent =
           'Додати категорію';
         document.getElementById('categoryForm').reset();
@@ -2296,6 +2337,10 @@
 
       // Відкрити модальне вікно редагування категорії
       function openEditCategoryModal(categoryKey) {
+        if (!confirmFormModalSwitch('categoryModal')) {
+          return;
+        }
+
         const category = achievements[categoryKey];
 
         if (category) {
@@ -2501,6 +2546,19 @@
         }
       }
 
+      function toggleCategoryEditControls(categoryKey) {
+        activeCategoryEditKey =
+          activeCategoryEditKey === categoryKey ? null : categoryKey;
+        renderAchievements();
+      }
+
+      function toggleAchievementEditControls(categoryKey, achievementId) {
+        const targetKey = `${categoryKey}:${achievementId}`;
+        activeAchievementEditKey =
+          activeAchievementEditKey === targetKey ? null : targetKey;
+        renderAchievements();
+      }
+
       // Перемікання згортання категорії
       function toggleCategoryCollapse(categoryKey) {
         achievements[categoryKey].collapsed =
@@ -2520,9 +2578,27 @@
           const category = achievements[categoryKey];
           const categoryDiv = document.createElement('div');
           categoryDiv.className = 'category';
+          if (activeCategoryEditKey === categoryKey) {
+            categoryDiv.classList.add('show-edit');
+          }
           if (category.collapsed) {
             categoryDiv.classList.add('collapsed');
           }
+
+          const categoryEditCorner = document.createElement('button');
+          categoryEditCorner.className = 'edit-corner-btn';
+          categoryEditCorner.type = 'button';
+          categoryEditCorner.title = 'Показати кнопки редагування категорії';
+          categoryEditCorner.setAttribute(
+            'aria-label',
+            'Показати кнопки редагування категорії',
+          );
+          categoryEditCorner.textContent = '✎';
+          categoryEditCorner.onclick = (e) => {
+            e.stopPropagation();
+            toggleCategoryEditControls(categoryKey);
+          };
+          categoryDiv.appendChild(categoryEditCorner);
 
           // Створюємо заголовок категорії
           const categoryHeader = document.createElement('div');
@@ -2579,12 +2655,8 @@
           const categoryControls = document.createElement('div');
           categoryControls.className = 'category-controls';
 
-          // Кнопки сортування
-          const sortControls = document.createElement('div');
-          sortControls.className = 'sort-controls';
-
           const upBtn = document.createElement('button');
-          upBtn.className = 'sort-btn';
+          upBtn.className = 'action-btn sort-btn';
           upBtn.innerHTML = '⬆️';
           upBtn.title = 'Перемістити вгору';
           upBtn.disabled = catIndex === 0;
@@ -2592,10 +2664,10 @@
             e.stopPropagation();
             moveCategoryUp(categoryKey);
           };
-          sortControls.appendChild(upBtn);
+          categoryControls.appendChild(upBtn);
 
           const downBtn = document.createElement('button');
-          downBtn.className = 'sort-btn';
+          downBtn.className = 'action-btn sort-btn';
           downBtn.innerHTML = '⬇️';
           downBtn.title = 'Перемістити вниз';
           downBtn.disabled = catIndex === sortedKeys.length - 1;
@@ -2603,9 +2675,7 @@
             e.stopPropagation();
             moveCategoryDown(categoryKey);
           };
-          sortControls.appendChild(downBtn);
-
-          categoryControls.appendChild(sortControls);
+          categoryControls.appendChild(downBtn);
 
           const editBtn = document.createElement('button');
           editBtn.className = 'category-action-btn';
@@ -2640,6 +2710,27 @@
           category.items.forEach((achievement, achIndex) => {
             const achievementDiv = document.createElement('div');
             achievementDiv.className = `achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`;
+            if (
+              activeAchievementEditKey === `${categoryKey}:${achievement.id}`
+            ) {
+              achievementDiv.classList.add('show-edit');
+            }
+
+            const achievementEditCorner = document.createElement('button');
+            achievementEditCorner.className = 'edit-corner-btn';
+            achievementEditCorner.type = 'button';
+            achievementEditCorner.title =
+              'Показати кнопки редагування досягнення';
+            achievementEditCorner.setAttribute(
+              'aria-label',
+              'Показати кнопки редагування досягнення',
+            );
+            achievementEditCorner.textContent = '✎';
+            achievementEditCorner.onclick = (e) => {
+              e.stopPropagation();
+              toggleAchievementEditControls(categoryKey, achievement.id);
+            };
+            achievementDiv.appendChild(achievementEditCorner);
 
             // ПЕРШИЙ РЯД - основний контент
             const achievementMain = document.createElement('div');
@@ -2693,12 +2784,11 @@
             const achievementControls = document.createElement('div');
             achievementControls.className = 'achievement-controls';
 
-            // Кнопки сортування
-            const sortControls = document.createElement('div');
-            sortControls.className = 'sort-controls';
+            const achievementActionRow = document.createElement('div');
+            achievementActionRow.className = 'achievement-action-row';
 
             const upBtn = document.createElement('button');
-            upBtn.className = 'sort-btn';
+            upBtn.className = 'action-btn sort-btn';
             upBtn.innerHTML = '⬆️';
             upBtn.title = 'Перемістити вгору';
             upBtn.disabled = achIndex === 0;
@@ -2706,20 +2796,18 @@
               e.stopPropagation();
               moveAchievementUp(categoryKey, achievement.id);
             };
-            sortControls.appendChild(upBtn);
+            achievementActionRow.appendChild(upBtn);
 
             const downBtn = document.createElement('button');
-            downBtn.className = 'sort-btn';
+            downBtn.className = 'action-btn sort-btn';
             downBtn.innerHTML = '⬇️';
-            upBtn.title = 'Перемістити вниз';
+            downBtn.title = 'Перемістити вниз';
             downBtn.disabled = achIndex === category.items.length - 1;
             downBtn.onclick = (e) => {
               e.stopPropagation();
               moveAchievementDown(categoryKey, achievement.id);
             };
-            sortControls.appendChild(downBtn);
-
-            achievementControls.appendChild(sortControls);
+            achievementActionRow.appendChild(downBtn);
 
             const editBtn = document.createElement('button');
             editBtn.className = 'action-btn edit-btn';
@@ -2729,7 +2817,7 @@
               e.stopPropagation();
               openEditModal(categoryKey, achievement.id);
             };
-            achievementControls.appendChild(editBtn);
+            achievementActionRow.appendChild(editBtn);
 
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'action-btn delete-btn';
@@ -2741,8 +2829,9 @@
               deleteAchievement(categoryKey, achievement.id);
               return false;
             };
-            achievementControls.appendChild(deleteBtn);
+            achievementActionRow.appendChild(deleteBtn);
 
+            achievementControls.appendChild(achievementActionRow);
             achievementDiv.appendChild(achievementControls);
             itemsContainer.appendChild(achievementDiv);
           });
@@ -3056,7 +3145,33 @@
 
       function openSettingsFromFab() {
         closeFabMenu();
-        openSettingsModal();
+        openQuickActionsModal();
+      }
+
+      function openQuickActionsModal() {
+        if (!confirmFormModalSwitch('quickActionsModal')) {
+          return;
+        }
+
+        document.getElementById('quickActionsModal').classList.add('active');
+        closeFabMenu();
+      }
+
+      function closeQuickActionsModal() {
+        document.getElementById('quickActionsModal').classList.remove('active');
+      }
+
+      function runQuickAction(action) {
+        closeQuickActionsModal();
+        if (action === 'export') {
+          exportData();
+        } else if (action === 'import') {
+          importData();
+        } else if (action === 'storage') {
+          checkStorageInfo();
+        } else if (action === 'theme') {
+          openSettingsModal();
+        }
       }
 
       // Закрити модальне вікно підтвердження скидання
@@ -3130,6 +3245,14 @@
           }
         });
 
+      document
+        .getElementById('quickActionsModal')
+        .addEventListener('click', function (e) {
+          if (e.target === this) {
+            closeQuickActionsModal();
+          }
+        });
+
       document.addEventListener('click', function (e) {
         const fabMenu = document.getElementById('fabMenu');
         if (!fabMenu.contains(e.target)) {
@@ -3145,6 +3268,10 @@
 
       // Settings modal handlers and utilities
       function openSettingsModal() {
+        if (!confirmFormModalSwitch('settingsModal')) {
+          return;
+        }
+
         document.getElementById('themeColor1').value =
           settings.color1 || '#667eea';
         document.getElementById('themeColor2').value =
