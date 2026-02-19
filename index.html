@@ -40,8 +40,8 @@
       }
 
       .header-logo {
-        width: min(520px, 90%);
-        height: auto;
+        width: auto;
+        height: 100px;
         margin-bottom: 10px;
         filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
       }
@@ -373,10 +373,14 @@
         transform: scale(1.05);
       }
 
-      .add-achievement-btn {
+      .fab-menu {
         position: fixed;
         bottom: 30px;
         right: 30px;
+        z-index: 1002;
+      }
+
+      .fab-btn {
         width: 60px;
         height: 60px;
         border-radius: 50%;
@@ -386,11 +390,49 @@
         font-size: 2em;
         cursor: pointer;
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        transition: transform 0.2s ease;
+        transition:
+          transform 0.25s ease,
+          opacity 0.25s ease;
       }
 
-      .add-achievement-btn:hover {
+      .fab-main-btn {
+        position: relative;
+        z-index: 2;
+      }
+
+      .fab-main-btn:hover {
         transform: scale(1.1);
+      }
+
+      .fab-menu.open .fab-main-btn {
+        transform: rotate(45deg);
+      }
+
+      .fab-sub-btn {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        font-size: 1.6em;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(0) scale(0.9);
+      }
+
+      .fab-menu.open .fab-sub-btn {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .fab-menu.open .fab-sub-btn:nth-of-type(1) {
+        transform: translateY(-75px) scale(1);
+      }
+
+      .fab-menu.open .fab-sub-btn:nth-of-type(2) {
+        transform: translateY(-150px) scale(1);
+      }
+
+      .fab-menu.open .fab-sub-btn:nth-of-type(3) {
+        transform: translateY(-225px) scale(1);
       }
 
       .form-modal {
@@ -866,6 +908,12 @@
         background: #f0f0f0;
         transform: scale(1.2);
       }
+
+      .ghost-footer {
+        height: 50px;
+        opacity: 0;
+        pointer-events: none;
+      }
     </style>
     <link rel="manifest" href="manifest.json" />
     <link rel="icon" href="appicon.png" sizes="192x192" type="image/png" />
@@ -1220,13 +1268,44 @@
       <span>Скинути все</span>
     </button>
 
-    <button
-      class="add-achievement-btn"
-      onclick="openAddModal()"
-      title="Додати досягнення"
-    >
-      +
-    </button>
+    <div class="fab-menu" id="fabMenu">
+      <button
+        class="fab-btn fab-sub-btn"
+        type="button"
+        onclick="openAddFromFab()"
+        title="Додати досягнення"
+        aria-label="Додати досягнення"
+      >
+        🏆
+      </button>
+      <button
+        class="fab-btn fab-sub-btn"
+        type="button"
+        onclick="openCategoryFromFab()"
+        title="Додати категорію"
+        aria-label="Додати категорію"
+      >
+        📁
+      </button>
+      <button
+        class="fab-btn fab-sub-btn"
+        type="button"
+        onclick="toggleEditMode()"
+        title="Налаштування"
+        aria-label="Налаштування"
+      >
+        ⚙️
+      </button>
+      <button
+        class="fab-btn fab-main-btn"
+        type="button"
+        onclick="toggleFabMenu()"
+        title="Меню додавання"
+        aria-label="Відкрити меню додавання"
+      >
+        +
+      </button>
+    </div>
 
     <script>
       const emojis = [
@@ -2955,6 +3034,31 @@
         document.getElementById('confirmResetModal').classList.add('active');
       }
 
+      function toggleFabMenu() {
+        const fabMenu = document.getElementById('fabMenu');
+        fabMenu.classList.toggle('open');
+      }
+
+      function closeFabMenu() {
+        const fabMenu = document.getElementById('fabMenu');
+        fabMenu.classList.remove('open');
+      }
+
+      function openAddFromFab() {
+        closeFabMenu();
+        openAddModal();
+      }
+
+      function openCategoryFromFab() {
+        closeFabMenu();
+        openCategoryModal();
+      }
+
+      function openSettingsFromFab() {
+        closeFabMenu();
+        openSettingsModal();
+      }
+
       // Закрити модальне вікно підтвердження скидання
       function closeConfirmReset() {
         document.getElementById('confirmResetModal').classList.remove('active');
@@ -3025,6 +3129,19 @@
             closeConfirmImport();
           }
         });
+
+      document.addEventListener('click', function (e) {
+        const fabMenu = document.getElementById('fabMenu');
+        if (!fabMenu.contains(e.target)) {
+          closeFabMenu();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeFabMenu();
+        }
+      });
 
       // Settings modal handlers and utilities
       function openSettingsModal() {
@@ -3103,5 +3220,6 @@
         console.warn('Service Worker не підтримується цим браузером');
       }
     </script>
+    <footer class="ghost-footer" aria-hidden="true"></footer>
   </body>
 </html>
