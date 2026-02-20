@@ -112,9 +112,6 @@
         margin-bottom: 10px;
       }
 
-      .category-header-top:hover {
-        opacity: 0.8;
-      }
 
       .category-controls {
         display: none;
@@ -163,9 +160,6 @@
         -webkit-text-fill-color: transparent;
       }
 
-      .collapse-toggle:hover {
-        transform: scale(1.2);
-      }
 
       .category.collapsed .collapse-toggle {
         transform: rotate(-90deg);
@@ -201,12 +195,6 @@
         width: 100%;
       }
 
-      .achievement:hover {
-        transform: scale(0.975);
-        box-shadow:
-          0 -5px 15px rgba(0, 0, 0, 0.1),
-          0 5px 15px rgba(0, 0, 0, 0.1);
-      }
 
       .achievement.unlocked {
         background: var(--app-gradient);
@@ -381,9 +369,6 @@
         transition: transform 0.2s ease;
       }
 
-      .modal button:hover {
-        transform: scale(1.05);
-      }
 
       .fab-menu {
         position: fixed;
@@ -412,9 +397,6 @@
         z-index: 2;
       }
 
-      .fab-main-btn:hover {
-        transform: scale(1.1);
-      }
 
       .fab-menu.open .fab-main-btn {
         transform: rotate(45deg);
@@ -470,9 +452,6 @@
         transition: transform 0.2s ease;
       }
 
-      .quick-action-btn:hover {
-        transform: translateY(-2px);
-      }
 
       .form-modal {
         display: none;
@@ -553,9 +532,6 @@
         transition: all 0.3s ease;
       }
 
-      .image-upload-area:hover {
-        background: #f8f9ff;
-      }
 
       .image-upload-area.has-image {
         border-style: solid;
@@ -602,19 +578,12 @@
         color: white;
       }
 
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-      }
 
       .btn-secondary {
         background: #e0e0e0;
         color: #333;
       }
 
-      .btn-secondary:hover {
-        background: #d0d0d0;
-      }
 
       .action-btn {
         width: 36px;
@@ -636,28 +605,14 @@
         color: green;
       }
 
-      .action-btn:hover {
-        transform: scale(1.1);
-      }
 
-      .edit-btn:hover {
-        background: #b9e90b;
-      }
 
       .achievement.locked .delete-btn {
         background: rgba(244, 67, 54, 0.1);
         color: #f44336;
       }
 
-      .achievement.unlocked .action-btn.delete-btn:hover {
-        background: #f44336;
-        color: white;
-      }
 
-      .achievement.locked .delete-btn:hover {
-        background: #f44336;
-        color: white;
-      }
 
       .custom-image {
         width: 40px;
@@ -675,10 +630,6 @@
         border-radius: 6px;
       }
 
-      .sort-btn:hover {
-        background: rgba(102, 126, 234, 0.2);
-        transform: scale(1.05);
-      }
 
       .sort-btn:disabled {
         opacity: 0.3;
@@ -734,29 +685,18 @@
         z-index: 3;
       }
 
-      .edit-corner-btn:hover {
-        color: #000;
-        transform: scale(1.05);
-      }
 
       .category.show-edit .category-controls,
       .achievement.show-edit .achievement-controls {
         display: flex;
       }
 
-      .category-action-btn:hover {
-        background: rgba(102, 126, 234, 0.2);
-        transform: scale(1.1);
-      }
 
       .category-action-btn.delete {
         background: rgba(244, 67, 54, 0.1);
         color: #f44336;
       }
 
-      .category-action-btn.delete:hover {
-        background: rgba(244, 67, 54, 0.2);
-      }
 
       .add-category-btn {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -769,9 +709,6 @@
         transition: all 0.2s ease;
       }
 
-      .add-category-btn:hover {
-        transform: scale(1.05);
-      }
 
       .category-form-group {
         display: grid;
@@ -814,11 +751,6 @@
         display: flex;
       }
 
-      .reset-btn:hover {
-        background: rgba(244, 67, 54, 1);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
-      }
 
       .confirm-modal {
         display: none;
@@ -883,19 +815,12 @@
         color: #333;
       }
 
-      .confirm-buttons .btn-cancel:hover {
-        background: #d0d0d0;
-      }
 
       .confirm-buttons .btn-confirm {
         background: #f44336;
         color: white;
       }
 
-      .confirm-buttons .btn-confirm:hover {
-        background: #d32f2f;
-        transform: scale(1.05);
-      }
 
       input[type='file'] {
         display: none;
@@ -922,9 +847,107 @@
         transition: all 0.2s ease;
       }
 
-      .emoji-option:hover {
-        background: #f0f0f0;
-        transform: scale(1.2);
+      @media (hover: hover) and (pointer: fine) {
+        .category-header-top:hover {
+          opacity: 0.8;
+        }
+
+        .collapse-toggle:hover {
+          transform: scale(1.2);
+        }
+
+        .achievement:hover {
+          transform: scale(0.975);
+          box-shadow:
+            0 -5px 15px rgba(0, 0, 0, 0.1),
+            0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal button:hover {
+          transform: scale(1.05);
+        }
+
+        .fab-main-btn:hover {
+          transform: scale(1.1);
+        }
+
+        .quick-action-btn:hover {
+          transform: translateY(-2px);
+        }
+
+        .image-upload-area:hover {
+          background: #f8f9ff;
+        }
+
+        .btn-primary:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary:hover {
+          background: #d0d0d0;
+        }
+
+        .action-btn:hover {
+          transform: scale(1.1);
+        }
+
+        .edit-btn:hover {
+          background: #b9e90b;
+        }
+
+        .achievement.unlocked .action-btn.delete-btn:hover {
+          background: #f44336;
+          color: white;
+        }
+
+        .achievement.locked .delete-btn:hover {
+          background: #f44336;
+          color: white;
+        }
+
+        .sort-btn:hover {
+          background: rgba(102, 126, 234, 0.2);
+          transform: scale(1.05);
+        }
+
+        .edit-corner-btn:hover {
+          color: #000;
+          transform: scale(1.05);
+        }
+
+        .category-action-btn:hover {
+          background: rgba(102, 126, 234, 0.2);
+          transform: scale(1.1);
+        }
+
+        .category-action-btn.delete:hover {
+          background: rgba(244, 67, 54, 0.2);
+        }
+
+        .add-category-btn:hover {
+          transform: scale(1.05);
+        }
+
+        .reset-btn:hover {
+          background: rgba(244, 67, 54, 1);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+
+        .confirm-buttons .btn-cancel:hover {
+          background: #d0d0d0;
+        }
+
+        .confirm-buttons .btn-confirm:hover {
+          background: #d32f2f;
+          transform: scale(1.05);
+        }
+
+        .emoji-option:hover {
+          background: #f0f0f0;
+          transform: scale(1.2);
+        }
       }
 
       .ghost-footer {
