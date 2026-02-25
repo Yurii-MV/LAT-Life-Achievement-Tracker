@@ -115,7 +115,6 @@
         margin-bottom: 10px;
       }
 
-
       .category-controls {
         display: none;
         gap: 10px;
@@ -163,7 +162,6 @@
         -webkit-text-fill-color: transparent;
       }
 
-
       .category.collapsed .collapse-toggle {
         transform: rotate(-90deg);
       }
@@ -192,12 +190,27 @@
         position: relative;
       }
 
+      .achievement.locked.focus-reveal {
+        opacity: 0;
+        filter: blur(16px);
+        transform: scale(1.04);
+        transition:
+          opacity 400ms ease,
+          filter 400ms ease,
+          transform 400ms ease;
+      }
+
+      .achievement.locked.focus-reveal.revealed {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1);
+      }
+
       .achievement-main {
         display: flex;
         align-items: center;
         width: 100%;
       }
-
 
       .achievement.unlocked {
         background: var(--app-gradient);
@@ -372,7 +385,6 @@
         transition: transform 0.2s ease;
       }
 
-
       .fab-menu {
         position: fixed;
         bottom: 30px;
@@ -399,7 +411,6 @@
         position: relative;
         z-index: 2;
       }
-
 
       .fab-menu.open .fab-main-btn {
         transform: rotate(45deg);
@@ -454,7 +465,6 @@
         gap: 8px;
         transition: transform 0.2s ease;
       }
-
 
       .form-modal {
         display: none;
@@ -535,7 +545,6 @@
         transition: all 0.3s ease;
       }
 
-
       .image-upload-area.has-image {
         border-style: solid;
       }
@@ -581,12 +590,10 @@
         color: white;
       }
 
-
       .btn-secondary {
         background: #e0e0e0;
         color: #333;
       }
-
 
       .action-btn {
         width: 36px;
@@ -605,17 +612,15 @@
 
       .achievement.locked .action-btn {
         background: rgba(102, 126, 234, 0.1);
-        color: green;
       }
-
-
 
       .achievement.locked .delete-btn {
-        background: rgba(244, 67, 54, 0.1);
-        color: #f44336;
+        background: rgba(244, 67, 54, 0.2);
       }
 
-
+      .achievement.unlocked .delete-btn {
+        background: rgba(244, 67, 54, 0.2);
+      }
 
       .custom-image {
         width: 40px;
@@ -632,7 +637,6 @@
         padding: 0;
         border-radius: 6px;
       }
-
 
       .sort-btn:disabled {
         opacity: 0.3;
@@ -688,18 +692,14 @@
         z-index: 3;
       }
 
-
       .category.show-edit .category-controls,
       .achievement.show-edit .achievement-controls {
         display: flex;
       }
 
-
       .category-action-btn.delete {
         background: rgba(244, 67, 54, 0.1);
-        color: #f44336;
       }
-
 
       .add-category-btn {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -711,7 +711,6 @@
         font-size: 0.9em;
         transition: all 0.2s ease;
       }
-
 
       .category-form-group {
         display: grid;
@@ -753,7 +752,6 @@
       .edit-mode .reset-btn {
         display: flex;
       }
-
 
       .confirm-modal {
         display: none;
@@ -818,12 +816,10 @@
         color: #333;
       }
 
-
       .confirm-buttons .btn-confirm {
         background: #f44336;
         color: white;
       }
-
 
       input[type='file'] {
         display: none;
@@ -900,13 +896,11 @@
         }
 
         .achievement.unlocked .action-btn.delete-btn:hover {
-          background: #f44336;
-          color: white;
+          background: rgba(244, 67, 54, 0.2);
         }
 
         .achievement.locked .delete-btn:hover {
-          background: #f44336;
-          color: white;
+          background: rgba(244, 67, 54, 0.2);
         }
 
         .sort-btn:hover {
@@ -1691,6 +1685,8 @@
       let pendingDeleteAction = null;
       let activeCategoryEditKey = null;
       let activeAchievementEditKey = null;
+      let achievementFocusObserver = null;
+      let achievementFocusRafId = null;
 
       let settings = {
         color1: '#667eea',
@@ -2587,6 +2583,52 @@
         renderAchievements();
       }
 
+      function initAchievementFocusReveal() {
+        const cards = document.querySelectorAll(
+          '.achievement.locked.focus-reveal',
+        );
+        if (!cards.length) {
+          return;
+        }
+
+        if (achievementFocusObserver) {
+          achievementFocusObserver.disconnect();
+        }
+
+        if (achievementFocusRafId) {
+          cancelAnimationFrame(achievementFocusRafId);
+          achievementFocusRafId = null;
+        }
+
+        // На старті робимо всі поточні картки різкими, щоб уникнути масового blur
+        // під час ререндеру/відкриття категорій.
+        cards.forEach((card) => {
+          card.classList.add('revealed');
+        });
+
+        if (!('IntersectionObserver' in window)) {
+          return;
+        }
+
+        achievementFocusRafId = requestAnimationFrame(() => {
+          achievementFocusObserver = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('revealed');
+                } else {
+                  entry.target.classList.remove('revealed');
+                }
+              });
+            },
+            { threshold: 0 },
+          );
+
+          cards.forEach((card) => achievementFocusObserver.observe(card));
+          achievementFocusRafId = null;
+        });
+      }
+
       // Перемікання згортання категорії
       function toggleCategoryCollapse(categoryKey) {
         achievements[categoryKey].collapsed =
@@ -2738,6 +2780,11 @@
           category.items.forEach((achievement, achIndex) => {
             const achievementDiv = document.createElement('div');
             achievementDiv.className = `achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`;
+            if (!achievement.unlocked) {
+              achievementDiv.classList.add('focus-reveal');
+            } else {
+              achievementDiv.classList.add('revealed');
+            }
             if (
               activeAchievementEditKey === `${categoryKey}:${achievement.id}`
             ) {
@@ -2869,6 +2916,7 @@
         });
 
         updateStats();
+        initAchievementFocusReveal();
       }
 
       // Перемикання статусу досягнення
