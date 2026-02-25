@@ -96,10 +96,6 @@
         position: relative;
       }
 
-      .category.collapsed {
-        padding-bottom: 20px;
-      }
-
       .category-header {
         display: flex;
         flex-direction: column;
@@ -107,6 +103,10 @@
         padding-bottom: 15px;
         border-bottom: 2px solid #f0f0f0;
         user-select: none;
+        transition:
+          margin-bottom 0.3s ease,
+          padding-bottom 0.3s ease,
+          border-bottom-color 0.3s ease;
       }
 
       .category-header-top {
@@ -114,6 +114,7 @@
         align-items: center;
         cursor: pointer;
         margin-bottom: 10px;
+        transition: margin-bottom 0.3s ease;
       }
 
       .category-controls {
@@ -122,13 +123,16 @@
         align-items: center;
         justify-content: center;
         padding-top: 8px;
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
       }
 
       .category.collapsed .category-header {
         margin-bottom: 0;
         padding-bottom: 0;
-        border-bottom: none;
+        border-bottom-color: transparent;
+      }
+
+      .category.collapsed .category-header-top {
+        margin-bottom: 0;
       }
 
       .category-icon {
@@ -258,11 +262,6 @@
         justify-content: center;
         margin-top: 8px;
         padding-bottom: 8px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      }
-
-      .achievement.unlocked .achievement-controls {
-        border-top-color: rgba(255, 255, 255, 0.2);
       }
 
       .achievement-controls .sort-controls {
@@ -696,6 +695,13 @@
       .category.show-edit .category-controls,
       .achievement.show-edit .achievement-controls {
         display: flex;
+      }
+
+      .category.expanding .achievement.locked.focus-reveal {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1);
+        transition: none;
       }
 
       .category-action-btn.delete {
@@ -2615,6 +2621,14 @@
           achievementFocusObserver = new IntersectionObserver(
             (entries) => {
               entries.forEach((entry) => {
+                const parentCategory = entry.target.closest('.category');
+                if (
+                  parentCategory &&
+                  parentCategory.classList.contains('expanding')
+                ) {
+                  return;
+                }
+
                 if (entry.isIntersecting) {
                   entry.target.classList.add('revealed');
                 } else {
@@ -2627,6 +2641,20 @@
 
           cards.forEach((card) => achievementFocusObserver.observe(card));
           achievementFocusRafId = null;
+        });
+      }
+
+      function syncFocusRevealInViewport(scopeEl) {
+        const cards = scopeEl.querySelectorAll(
+          '.achievement.locked.focus-reveal',
+        );
+        const viewportHeight =
+          window.innerHeight || document.documentElement.clientHeight;
+
+        cards.forEach((card) => {
+          const rect = card.getBoundingClientRect();
+          const isVisibleNow = rect.bottom > 0 && rect.top < viewportHeight;
+          card.classList.toggle('revealed', isVisibleNow);
         });
       }
 
@@ -2660,10 +2688,24 @@
           } else {
             categoryEl.classList.remove('collapsed');
             if (itemsEl) {
+              categoryEl.classList.add('expanding');
+
+              // На старті розгортання показуємо картки різкими, без миттєвого blur.
+              categoryEl
+                .querySelectorAll('.achievement.locked.focus-reveal')
+                .forEach((card) => card.classList.add('revealed'));
+
               itemsEl.style.maxHeight = '0px';
               requestAnimationFrame(() => {
                 itemsEl.style.maxHeight = `${itemsEl.scrollHeight}px`;
               });
+
+              // Після завершення анімації синхронізуємо blur тільки для карток
+              // поза viewport.
+              setTimeout(() => {
+                categoryEl.classList.remove('expanding');
+                syncFocusRevealInViewport(categoryEl);
+              }, 320);
             }
           }
 
