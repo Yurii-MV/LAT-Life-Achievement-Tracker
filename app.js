@@ -87,7 +87,6 @@ let achievements = {
         icon: '🏃',
         name: 'Перший крок',
         description: 'Пробігти перші 5 км',
-        points: 10,
         unlocked: false,
       },
       {
@@ -95,7 +94,6 @@ let achievements = {
         icon: '🥗',
         name: 'Здорове харчування',
         description: 'Тиждень правильного харчування',
-        points: 15,
         unlocked: false,
       },
       {
@@ -103,7 +101,6 @@ let achievements = {
         icon: '💧',
         name: 'Водний баланс',
         description: 'Пити 2л води щодня протягом місяця',
-        points: 20,
         unlocked: false,
       },
       {
@@ -111,7 +108,6 @@ let achievements = {
         icon: '🧘',
         name: 'Zen майстер',
         description: '30 днів медитації підряд',
-        points: 25,
         unlocked: false,
       },
       {
@@ -119,7 +115,6 @@ let achievements = {
         icon: '🏋️',
         name: 'Силач',
         description: '3 місяці регулярних тренувань',
-        points: 30,
         unlocked: false,
       },
     ],
@@ -135,7 +130,6 @@ let achievements = {
         icon: '📚',
         name: 'Перший навик',
         description: 'Вивчити нову технологію',
-        points: 15,
         unlocked: false,
       },
       {
@@ -143,7 +137,6 @@ let achievements = {
         icon: '🎯',
         name: 'Підвищення',
         description: 'Отримати підвищення на роботі',
-        points: 30,
         unlocked: false,
       },
       {
@@ -151,7 +144,6 @@ let achievements = {
         icon: '🚀',
         name: 'Свій проєкт',
         description: 'Запустити власний проєкт',
-        points: 50,
         unlocked: false,
       },
       {
@@ -159,7 +151,6 @@ let achievements = {
         icon: '💡',
         name: 'Інноватор',
         description: 'Реалізувати креативну ідею',
-        points: 25,
         unlocked: false,
       },
       {
@@ -167,7 +158,6 @@ let achievements = {
         icon: '🏆',
         name: 'Професіонал',
         description: '5 років досвіду в галузі',
-        points: 100,
         unlocked: false,
       },
     ],
@@ -183,7 +173,6 @@ let achievements = {
         icon: '🎉',
         name: 'Організатор',
         description: 'Організувати захід для друзів',
-        points: 15,
         unlocked: false,
       },
       {
@@ -191,7 +180,6 @@ let achievements = {
         icon: '🤝',
         name: 'Нові знайомства',
         description: 'Познайомитися з 10 новими людьми',
-        points: 20,
         unlocked: false,
       },
       {
@@ -199,7 +187,6 @@ let achievements = {
         icon: '❤️',
         name: 'Довгострокові відносини',
         description: 'Рік у відносинах',
-        points: 30,
         unlocked: false,
       },
       {
@@ -207,7 +194,6 @@ let achievements = {
         icon: '🎤',
         name: 'Публічний виступ',
         description: 'Виступити перед аудиторією',
-        points: 25,
         unlocked: false,
       },
       {
@@ -215,7 +201,6 @@ let achievements = {
         icon: '🌍',
         name: 'Мандрівник',
         description: 'Відвідати 5 нових країн',
-        points: 40,
         unlocked: false,
       },
     ],
@@ -231,7 +216,6 @@ let achievements = {
         icon: '📖',
         name: 'Книголюб',
         description: 'Прочитати 12 книг за рік',
-        points: 20,
         unlocked: false,
       },
       {
@@ -239,7 +223,6 @@ let achievements = {
         icon: '🎨',
         name: 'Творець',
         description: 'Створити щось своїми руками',
-        points: 15,
         unlocked: false,
       },
       {
@@ -247,7 +230,6 @@ let achievements = {
         icon: '🎵',
         name: 'Музикант',
         description: 'Навчитися грати на інструменті',
-        points: 35,
         unlocked: false,
       },
       {
@@ -255,7 +237,6 @@ let achievements = {
         icon: '🌱',
         name: 'Нова звичка',
         description: 'Сформувати корисну звичку (21 день)',
-        points: 20,
         unlocked: false,
       },
       {
@@ -263,7 +244,6 @@ let achievements = {
         icon: '🎓',
         name: 'Вічний студент',
         description: 'Пройти онлайн-курс',
-        points: 25,
         unlocked: false,
       },
     ],
@@ -279,7 +259,6 @@ let achievements = {
         icon: '💵',
         name: 'Перші заощадження',
         description: 'Накопичити місячну зарплату',
-        points: 20,
         unlocked: false,
       },
       {
@@ -287,7 +266,6 @@ let achievements = {
         icon: '📊',
         name: 'Інвестор',
         description: 'Зробити перші інвестиції',
-        points: 30,
         unlocked: false,
       },
       {
@@ -295,7 +273,6 @@ let achievements = {
         icon: '🏠',
         name: 'Власне житло',
         description: 'Купити квартиру/будинок',
-        points: 100,
         unlocked: false,
       },
       {
@@ -303,7 +280,6 @@ let achievements = {
         icon: '📈',
         name: 'Фінансова грамотність',
         description: 'Вести бюджет протягом року',
-        points: 25,
         unlocked: false,
       },
       {
@@ -311,7 +287,6 @@ let achievements = {
         icon: '💎',
         name: 'Фінансова незалежність',
         description: 'Пасивний дохід > витрат',
-        points: 150,
         unlocked: false,
       },
     ],
@@ -321,6 +296,23 @@ let achievements = {
 // #endregion
 
 // #region Runtime State
+const STORAGE_KEY = 'lifeAchievements';
+const STORAGE_LIMIT_MB = 5;
+const IMAGE_UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
+const IMAGE_MAX_DIMENSION = 400;
+const CATEGORY_EXPAND_SYNC_DELAY_MS = 320;
+const EXPORT_COPY_RESET_MS = 2000;
+
+const $ = (id) => document.getElementById(id);
+
+function setModalActive(modalId, isActive) {
+  const modal = $(modalId);
+  if (!modal) {
+    return;
+  }
+  modal.classList.toggle('active', isActive);
+}
+
 // Поточний стан застосунку та UI-прапорці.
 let nextId = 26;
 let pendingDeleteAction = null;
@@ -356,7 +348,7 @@ function applySettings() {
 // #region Persistence: localStorage and storage warnings
 // Завантаження даних з localStorage.
 function loadProgress() {
-  const saved = localStorage.getItem('lifeAchievements');
+  const saved = localStorage.getItem(STORAGE_KEY);
   if (saved) {
     const savedData = JSON.parse(saved);
     achievements = savedData.achievements || achievements;
@@ -376,7 +368,7 @@ function saveProgress() {
       settings: settings,
     });
 
-    localStorage.setItem('lifeAchievements', dataToSave);
+    localStorage.setItem(STORAGE_KEY, dataToSave);
 
     // Перевірка використання localStorage
     checkStorageUsage();
@@ -396,30 +388,41 @@ function saveProgress() {
   }
 }
 
+function getStorageUsageChars() {
+  return Object.keys(localStorage).reduce((total, key) => {
+    return total + localStorage[key].length + key.length;
+  }, 0);
+}
+
+function getStorageUsageMetrics() {
+  const totalChars = getStorageUsageChars();
+  const usedMBValue = totalChars / 1024 / 1024;
+  const usedKBValue = totalChars / 1024;
+  const percentageValue = (usedMBValue / STORAGE_LIMIT_MB) * 100;
+
+  return {
+    usedMB: usedMBValue.toFixed(2),
+    usedKB: usedKBValue.toFixed(0),
+    percentage: percentageValue.toFixed(1),
+    percentageValue,
+  };
+}
+
 // Показати інформацію про сховище.
 function checkStorageInfo() {
   try {
-    let total = 0;
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        total += localStorage[key].length + key.length;
-      }
-    }
-
-    const usedMB = (total / 1024 / 1024).toFixed(2);
-    const usedKB = (total / 1024).toFixed(0);
-    const limitMB = 5;
-    const percentage = ((usedMB / limitMB) * 100).toFixed(1);
+    const { usedMB, usedKB, percentage, percentageValue } =
+      getStorageUsageMetrics();
 
     let status = '';
     let icon = '';
-    if (percentage < 50) {
+    if (percentageValue < 50) {
       status = 'Достатньо місця';
       icon = '✅';
-    } else if (percentage < 70) {
+    } else if (percentageValue < 70) {
       status = 'Помірне використання';
       icon = '⚠️';
-    } else if (percentage < 90) {
+    } else if (percentageValue < 90) {
       status = 'Високе використання';
       icon = '⚠️';
     } else {
@@ -431,15 +434,15 @@ function checkStorageInfo() {
               ${icon} ${status}
               
               Використано: ${usedMB} MB (${usedKB} KB)
-              Ліміт: ~${limitMB} MB
+              Ліміт: ~${STORAGE_LIMIT_MB} MB
               Заповнення: ${percentage}%
               
-              ${percentage > 70 ? '\n⚠️ Рекомендується зробити експорт даних!' : ''}
-              ${percentage > 90 ? '\n🚨 ТЕРМІНОВО експортуйте дані!' : ''}
+              ${percentageValue > 70 ? '\n⚠️ Рекомендується зробити експорт даних!' : ''}
+              ${percentageValue > 90 ? '\n🚨 ТЕРМІНОВО експортуйте дані!' : ''}
           `;
 
-    document.getElementById('storageInfoMessage').textContent = message;
-    document.getElementById('storageInfoModal').classList.add('active');
+    $('storageInfoMessage').textContent = message;
+    setModalActive('storageInfoModal', true);
   } catch (e) {
     alert('Помилка перевірки сховища: ' + e.message);
   }
@@ -447,30 +450,20 @@ function checkStorageInfo() {
 
 // Закрити вікно інформації про сховище.
 function closeStorageInfo() {
-  document.getElementById('storageInfoModal').classList.remove('active');
+  setModalActive('storageInfoModal', false);
 }
 
 // Перевірка використання сховища.
 function checkStorageUsage() {
   try {
-    let total = 0;
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        total += localStorage[key].length + key.length;
-      }
-    }
-
-    // Переводимо в MB
-    const usedMB = (total / 1024 / 1024).toFixed(2);
-    const limitMB = 5; // Приблизний ліміт для більшості браузерів
-    const percentage = ((usedMB / limitMB) * 100).toFixed(1);
+    const { usedMB, percentage, percentageValue } = getStorageUsageMetrics();
 
     // Перевірка заповнення (без виводу в консоль)
 
     // Попередження при 70% заповнення
-    if (percentage > 70 && percentage <= 90) {
+    if (percentageValue > 70 && percentageValue <= 90) {
       showStorageWarning('medium', usedMB, percentage);
-    } else if (percentage > 90) {
+    } else if (percentageValue > 90) {
       showStorageWarning('high', usedMB, percentage);
     }
   } catch (e) {
@@ -502,9 +495,12 @@ function showStorageWarning(level, usedMB, percentage) {
 // #endregion
 
 // #region Media Inputs: emoji pickers and image uploads
-// Ініціалізація емодзі-пікера для досягнень.
-function initEmojiPicker() {
-  const emojiPicker = document.getElementById('emojiPicker');
+function renderEmojiPicker(pickerId, onSelect) {
+  const emojiPicker = $(pickerId);
+  if (!emojiPicker) {
+    return;
+  }
+
   emojiPicker.innerHTML = '';
   emojis.forEach((emoji) => {
     const emojiDiv = document.createElement('div');
@@ -512,258 +508,178 @@ function initEmojiPicker() {
     emojiDiv.textContent = emoji;
     emojiDiv.onclick = (e) => {
       e.stopPropagation();
-      selectEmoji(emoji);
+      onSelect(emoji);
     };
     emojiPicker.appendChild(emojiDiv);
+  });
+}
+
+function applySelectedEmoji(config, emoji) {
+  const imageInput = $(config.imageInputId);
+  const previewImage = $(config.previewImageId);
+  const uploadContent = $(config.uploadContentId);
+
+  if (imageInput) {
+    imageInput.value = emoji;
+  }
+  if (previewImage) {
+    previewImage.src = '';
+    previewImage.style.display = 'none';
+  }
+  if (uploadContent) {
+    uploadContent.style.display = 'block';
+    uploadContent.innerHTML = `
+          <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
+          <div class="upload-text">Обрано емодзі (натисніть для зміни)</div>
+      `;
+  }
+}
+
+// Ініціалізація емодзі-пікера для досягнень.
+function initEmojiPicker() {
+  renderEmojiPicker('emojiPicker', (emoji) => {
+    applySelectedEmoji(
+      {
+        imageInputId: 'achievementImage',
+        previewImageId: 'previewImage',
+        uploadContentId: 'uploadContent',
+      },
+      emoji,
+    );
   });
 }
 
 // Ініціалізація емодзі-пікера для категорій.
 function initCategoryEmojiPicker() {
-  const emojiPicker = document.getElementById('categoryEmojiPicker');
-  emojiPicker.innerHTML = '';
-  emojis.forEach((emoji) => {
-    const emojiDiv = document.createElement('div');
-    emojiDiv.className = 'emoji-option';
-    emojiDiv.textContent = emoji;
-    emojiDiv.onclick = (e) => {
-      e.stopPropagation();
-      selectCategoryEmoji(emoji);
-    };
-    emojiPicker.appendChild(emojiDiv);
+  renderEmojiPicker('categoryEmojiPicker', (emoji) => {
+    applySelectedEmoji(
+      {
+        imageInputId: 'categoryIcon',
+        previewImageId: 'categoryPreviewImage',
+        uploadContentId: 'categoryUploadContent',
+      },
+      emoji,
+    );
   });
 }
 
-// Вибір емодзі для досягнення.
-function selectEmoji(emoji) {
-  document.getElementById('achievementImage').value = emoji;
-  document.getElementById('previewImage').style.display = 'none';
-  document.getElementById('uploadContent').innerHTML = `
-          <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
-          <div class="upload-text">Обрано емодзі (натисніть для зміни)</div>
-      `;
-}
+function handleImageUploadByConfig(event, config) {
+  const file = event.target.files[0];
 
-// Вибір емодзі для категорії.
-function selectCategoryEmoji(emoji) {
-  document.getElementById('categoryIcon').value = emoji;
-  document.getElementById('categoryPreviewImage').style.display = 'none';
-  document.getElementById('categoryUploadContent').innerHTML = `
-          <div style="font-size: 4em; margin: 20px 0;">${emoji}</div>
-          <div class="upload-text">Обрано емодзі (натисніть для зміни)</div>
-      `;
+  if (!file) {
+    alert('Файл не обрано. Спробуйте ще раз.');
+    return;
+  }
+
+  if (file.size > IMAGE_UPLOAD_MAX_BYTES) {
+    alert('Зображення занадто велике. Будь ласка, оберіть файл менше 5MB.');
+    return;
+  }
+
+  if (file.size === 0) {
+    alert('Файл порожній. Спробуйте зробити фото ще раз.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onerror = function (error) {
+    console.error('ERROR: FileReader error:', error);
+    alert('Помилка при завантаженні зображення. Спробуйте інший файл.');
+  };
+
+  reader.onload = function (e) {
+    try {
+      const imageData = e.target.result;
+      if (!imageData) {
+        alert('Не вдалося завантажити зображення.');
+        return;
+      }
+
+      const img = new Image();
+      img.onload = function () {
+        try {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > IMAGE_MAX_DIMENSION || height > IMAGE_MAX_DIMENSION) {
+            if (width > height) {
+              height = (height / width) * IMAGE_MAX_DIMENSION;
+              width = IMAGE_MAX_DIMENSION;
+            } else {
+              width = (width / height) * IMAGE_MAX_DIMENSION;
+              height = IMAGE_MAX_DIMENSION;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const isLosslessType =
+            file.type === 'image/png' ||
+            file.type === 'image/gif' ||
+            file.type === 'image/webp';
+          const compressedData = isLosslessType
+            ? canvas.toDataURL('image/png')
+            : canvas.toDataURL('image/jpeg', 0.8);
+
+          const imageInput = $(config.imageInputId);
+          const previewImage = $(config.previewImageId);
+          const uploadContent = $(config.uploadContentId);
+
+          if (imageInput) {
+            imageInput.value = compressedData;
+          }
+          if (previewImage) {
+            previewImage.src = compressedData;
+            previewImage.style.display = 'block';
+          }
+          if (uploadContent) {
+            uploadContent.style.display = 'none';
+          }
+        } catch (error) {
+          console.error('ERROR in canvas processing:', error);
+          alert('Помилка при обробці зображення: ' + error.message);
+        }
+      };
+
+      img.onerror = function () {
+        console.error('ERROR: Image failed to load');
+        alert('Не вдалося завантажити зображення. Спробуйте інший файл.');
+      };
+      img.src = imageData;
+    } catch (error) {
+      console.error('ERROR in onload handler:', error);
+      alert('Помилка при обробці зображення: ' + error.message);
+    }
+  };
+
+  try {
+    reader.readAsDataURL(file);
+  } catch (error) {
+    console.error('ERROR calling readAsDataURL:', error);
+    alert('Помилка при читанні файлу: ' + error.message);
+  }
 }
 
 // Обробка завантаження зображення досягнення.
 function handleImageUpload(event) {
-  const file = event.target.files[0];
-
-  if (!file) {
-    alert('Файл не обрано. Спробуйте ще раз.');
-    return;
-  }
-
-  // Перевірка розміру файлу (максимум 5MB для камери)
-  if (file.size > 5 * 1024 * 1024) {
-    alert(
-      'Зображення занадто велике. Будь ласка, оберіть файл менше 5MB.',
-    );
-    return;
-  }
-
-  if (file.size === 0) {
-    alert('Файл порожній. Спробуйте зробити фото ще раз.');
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onerror = function (error) {
-    console.error('ERROR: FileReader error:', error);
-    alert('Помилка при завантаженні зображення. Спробуйте інший файл.');
-  };
-
-  reader.onload = function (e) {
-    try {
-      const imageData = e.target.result;
-
-      if (!imageData) {
-        alert('Не вдалося завантажити зображення.');
-        return;
-      }
-
-      const img = new Image();
-
-      img.onload = function () {
-        try {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-
-          const maxSize = 400;
-          if (width > maxSize || height > maxSize) {
-            if (width > height) {
-              height = (height / width) * maxSize;
-              width = maxSize;
-            } else {
-              width = (width / height) * maxSize;
-              height = maxSize;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          let compressedData;
-          if (
-            file.type === 'image/png' ||
-            file.type === 'image/gif' ||
-            file.type === 'image/webp'
-          ) {
-            compressedData = canvas.toDataURL('image/png');
-          } else {
-            compressedData = canvas.toDataURL('image/jpeg', 0.8);
-          }
-
-          document.getElementById('achievementImage').value =
-            compressedData;
-          document.getElementById('previewImage').src = compressedData;
-          document.getElementById('previewImage').style.display = 'block';
-          document.getElementById('uploadContent').style.display = 'none';
-        } catch (error) {
-          console.error('ERROR in canvas processing:', error);
-          alert('Помилка при обробці зображення: ' + error.message);
-        }
-      };
-
-      img.onerror = function (error) {
-        console.error('ERROR: Image failed to load');
-        alert('Не вдалося завантажити зображення. Спробуйте інший файл.');
-      };
-
-      img.src = imageData;
-    } catch (error) {
-      console.error('ERROR in onload handler:', error);
-      alert('Помилка при обробці зображення: ' + error.message);
-    }
-  };
-
-  try {
-    reader.readAsDataURL(file);
-  } catch (error) {
-    console.error('ERROR calling readAsDataURL:', error);
-    alert('Помилка при читанні файлу: ' + error.message);
-  }
+  handleImageUploadByConfig(event, {
+    imageInputId: 'achievementImage',
+    previewImageId: 'previewImage',
+    uploadContentId: 'uploadContent',
+  });
 }
 
 // Обробка завантаження зображення категорії.
 function handleCategoryImageUpload(event) {
-  const file = event.target.files[0];
-
-  if (!file) {
-    alert('Файл не обрано. Спробуйте ще раз.');
-    return;
-  }
-
-  // Перевірка розміру файлу (максимум 5MB для камери)
-  if (file.size > 5 * 1024 * 1024) {
-    alert(
-      'Зображення занадто велике. Будь ласка, оберіть файл менше 5MB.',
-    );
-    return;
-  }
-
-  if (file.size === 0) {
-    alert('Файл порожній. Спробуйте зробити фото ще раз.');
-    return;
-  }
-
-  const reader = new FileReader();
-
-  reader.onerror = function (error) {
-    console.error('ERROR: FileReader error:', error);
-    alert('Помилка при завантаженні зображення. Спробуйте інший файл.');
-  };
-
-  reader.onload = function (e) {
-    try {
-      const imageData = e.target.result;
-
-      if (!imageData) {
-        alert('Не вдалося завантажити зображення.');
-        return;
-      }
-
-      const img = new Image();
-
-      img.onload = function () {
-        try {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-
-          const maxSize = 400;
-          if (width > maxSize || height > maxSize) {
-            if (width > height) {
-              height = (height / width) * maxSize;
-              width = maxSize;
-            } else {
-              width = (width / height) * maxSize;
-              height = maxSize;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-
-          let compressedData;
-          if (
-            file.type === 'image/png' ||
-            file.type === 'image/gif' ||
-            file.type === 'image/webp'
-          ) {
-            compressedData = canvas.toDataURL('image/png');
-          } else {
-            compressedData = canvas.toDataURL('image/jpeg', 0.8);
-          }
-
-          document.getElementById('categoryIcon').value = compressedData;
-          document.getElementById('categoryPreviewImage').src =
-            compressedData;
-          document.getElementById('categoryPreviewImage').style.display =
-            'block';
-          document.getElementById('categoryUploadContent').style.display =
-            'none';
-        } catch (error) {
-          console.error('ERROR in canvas processing:', error);
-          alert('Помилка при обробці зображення: ' + error.message);
-        }
-      };
-
-      img.onerror = function (error) {
-        console.error('ERROR: Image failed to load');
-        alert('Не вдалося завантажити зображення. Спробуйте інший файл.');
-      };
-
-      img.src = imageData;
-    } catch (error) {
-      console.error('ERROR in onload handler:', error);
-      alert('Помилка при обробці зображення: ' + error.message);
-    }
-  };
-
-  try {
-    reader.readAsDataURL(file);
-  } catch (error) {
-    console.error('ERROR calling readAsDataURL:', error);
-    alert('Помилка при читанні файлу: ' + error.message);
-  }
+  handleImageUploadByConfig(event, {
+    imageInputId: 'categoryIcon',
+    previewImageId: 'categoryPreviewImage',
+    uploadContentId: 'categoryUploadContent',
+  });
 }
 // #endregion
 
@@ -826,7 +742,7 @@ function openAddModal() {
   }
 
   initEmojiPicker();
-  document.getElementById('formModal').classList.add('active');
+  setModalActive('formModal', true);
 }
 
 // Відкрити модальне вікно редагування досягнення.
@@ -877,13 +793,13 @@ function openEditModal(categoryKey, achievementId) {
     }
 
     initEmojiPicker();
-    document.getElementById('formModal').classList.add('active');
+    setModalActive('formModal', true);
   }
 }
 
 // Закрити форму досягнення.
 function closeFormModal() {
-  document.getElementById('formModal').classList.remove('active');
+  setModalActive('formModal', false);
 }
 
 // Зберегти досягнення (створення або редагування).
@@ -982,7 +898,7 @@ function deleteAchievement(categoryKey, achievementId) {
     }
   };
 
-  document.getElementById('confirmDeleteModal').classList.add('active');
+  setModalActive('confirmDeleteModal', true);
 }
 // #endregion
 
@@ -1007,7 +923,7 @@ function openCategoryModal() {
           <div class="upload-text">Натисніть, щоб завантажити зображення<br>або оберіть емодзі нижче</div>
       `;
   initCategoryEmojiPicker();
-  document.getElementById('categoryModal').classList.add('active');
+  setModalActive('categoryModal', true);
 }
 
 // Відкрити модальне вікно редагування категорії.
@@ -1045,13 +961,13 @@ function openEditCategoryModal(categoryKey) {
     }
 
     initCategoryEmojiPicker();
-    document.getElementById('categoryModal').classList.add('active');
+    setModalActive('categoryModal', true);
   }
 }
 
 // Закрити форму категорії.
 function closeCategoryModal() {
-  document.getElementById('categoryModal').classList.remove('active');
+  setModalActive('categoryModal', false);
 }
 
 // Зберегти категорію (створення або редагування).
@@ -1126,14 +1042,12 @@ function deleteCategory(categoryKey) {
     renderAchievements();
   };
 
-  document.getElementById('confirmDeleteModal').classList.add('active');
+  setModalActive('confirmDeleteModal', true);
 }
 
 // Закрити модальне вікно підтвердження видалення.
 function closeConfirmDelete() {
-  document
-    .getElementById('confirmDeleteModal')
-    .classList.remove('active');
+  setModalActive('confirmDeleteModal', false);
   pendingDeleteAction = null;
 }
 
@@ -1351,7 +1265,7 @@ function toggleCategoryCollapse(categoryKey) {
         setTimeout(() => {
           categoryEl.classList.remove('expanding');
           syncFocusRevealInViewport(categoryEl);
-        }, 320);
+        }, CATEGORY_EXPAND_SYNC_DELAY_MS);
       }
     }
 
@@ -1365,283 +1279,337 @@ function toggleCategoryCollapse(categoryKey) {
 // #endregion
 
 // #region Rendering and Achievement State
-// Головний рендер категорій і карток досягнень.
-function renderAchievements() {
-  const container = document.getElementById('categoriesContainer');
-  container.innerHTML = '';
+function createActionButton({
+  className,
+  html,
+  title,
+  disabled = false,
+  onClick,
+}) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = className;
+  button.innerHTML = html;
+  button.title = title;
+  button.disabled = disabled;
+  button.onclick = onClick;
+  return button;
+}
 
-  const sortedKeys = getSortedCategoryKeys();
+function createEditCornerButton({ title, ariaLabel, onClick }) {
+  const editCorner = document.createElement('button');
+  editCorner.className = 'edit-corner-btn';
+  editCorner.type = 'button';
+  editCorner.title = title;
+  editCorner.setAttribute('aria-label', ariaLabel);
+  editCorner.textContent = '✎';
+  editCorner.onclick = onClick;
+  return editCorner;
+}
 
-  sortedKeys.forEach((categoryKey, catIndex) => {
-    const category = achievements[categoryKey];
-    const categoryDiv = document.createElement('div');
-    categoryDiv.className = 'category';
-    categoryDiv.dataset.categoryKey = categoryKey;
-    if (activeCategoryEditKey === categoryKey) {
-      categoryDiv.classList.add('show-edit');
-    }
-    if (category.collapsed) {
-      categoryDiv.classList.add('collapsed');
-    }
-
-    const categoryEditCorner = document.createElement('button');
-    categoryEditCorner.className = 'edit-corner-btn';
-    categoryEditCorner.type = 'button';
-    categoryEditCorner.title = 'Показати кнопки редагування категорії';
-    categoryEditCorner.setAttribute(
-      'aria-label',
-      'Показати кнопки редагування категорії',
-    );
-    categoryEditCorner.textContent = '✎';
-    categoryEditCorner.onclick = (e) => {
+function createCategoryIconNode(category) {
+  if (category.icon && category.icon.startsWith('data:')) {
+    const img = document.createElement('img');
+    img.src = category.icon;
+    img.className = 'custom-image';
+    img.style.cursor = 'zoom-in';
+    img.onclick = (e) => {
       e.stopPropagation();
-      toggleCategoryEditControls(categoryKey);
+      openImageModal(category.icon);
     };
-    categoryDiv.appendChild(categoryEditCorner);
+    return img;
+  }
 
-    // Створюємо заголовок категорії
-    const categoryHeader = document.createElement('div');
-    categoryHeader.className = 'category-header';
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'category-icon';
+  iconSpan.textContent = category.icon || '📁';
+  return iconSpan;
+}
 
-    // Перший ряд - кнопка згортання, іконка та назва
-    const categoryHeaderTop = document.createElement('div');
-    categoryHeaderTop.className = 'category-header-top';
-    categoryHeaderTop.onclick = () => toggleCategoryCollapse(categoryKey);
-
-    // Кнопка згортання/розгортання
-    const collapseBtn = document.createElement('button');
-    collapseBtn.className = 'collapse-toggle';
-    collapseBtn.innerHTML = '▼';
-    collapseBtn.title = category.collapsed ? 'Розгорнути' : 'Згорнути';
-    collapseBtn.onclick = (e) => {
+function createAchievementIconNode(achievement) {
+  if (achievement.image && achievement.image.startsWith('data:')) {
+    const img = document.createElement('img');
+    img.src = achievement.image;
+    img.className = 'custom-image achievement-icon';
+    img.style.cursor = 'zoom-in';
+    img.onclick = (e) => {
       e.stopPropagation();
-      toggleCategoryCollapse(categoryKey);
+      openImageModal(achievement.image);
     };
-    categoryHeaderTop.appendChild(collapseBtn);
+    return img;
+  }
 
-    // Іконка категорії (клікабельна для перегляду)
-    if (category.icon && category.icon.startsWith('data:')) {
-      const img = document.createElement('img');
-      img.src = category.icon;
-      img.className = 'custom-image';
-      img.style.cursor = 'zoom-in';
-      img.onclick = (e) => {
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'achievement-icon';
+  iconSpan.textContent = achievement.icon || '🏆';
+  return iconSpan;
+}
+
+function renderCategoryControls(categoryKey, catIndex, totalCategories) {
+  const controls = document.createElement('div');
+  controls.className = 'category-controls';
+
+  controls.appendChild(
+    createActionButton({
+      className: 'action-btn sort-btn',
+      html: '⬆️',
+      title: 'Перемістити вгору',
+      disabled: catIndex === 0,
+      onClick: (e) => {
         e.stopPropagation();
-        openImageModal(category.icon);
-      };
-      categoryHeaderTop.appendChild(img);
-    } else if (category.icon) {
-      const iconSpan = document.createElement('span');
-      iconSpan.className = 'category-icon';
-      iconSpan.textContent = category.icon;
-      categoryHeaderTop.appendChild(iconSpan);
-    } else {
-      const iconSpan = document.createElement('span');
-      iconSpan.className = 'category-icon';
-      iconSpan.textContent = '📁';
-      categoryHeaderTop.appendChild(iconSpan);
-    }
+        moveCategoryUp(categoryKey);
+      },
+    }),
+  );
 
-    // Назва категорії
-    const titleSpan = document.createElement('span');
-    titleSpan.className = 'category-title';
-    titleSpan.textContent = category.title;
-    categoryHeaderTop.appendChild(titleSpan);
-
-    categoryHeader.appendChild(categoryHeaderTop);
-
-    // Другий ряд - кнопки управління
-    const categoryControls = document.createElement('div');
-    categoryControls.className = 'category-controls';
-
-    const upBtn = document.createElement('button');
-    upBtn.className = 'action-btn sort-btn';
-    upBtn.innerHTML = '⬆️';
-    upBtn.title = 'Перемістити вгору';
-    upBtn.disabled = catIndex === 0;
-    upBtn.onclick = (e) => {
-      e.stopPropagation();
-      moveCategoryUp(categoryKey);
-    };
-    categoryControls.appendChild(upBtn);
-
-    const downBtn = document.createElement('button');
-    downBtn.className = 'action-btn sort-btn';
-    downBtn.innerHTML = '⬇️';
-    downBtn.title = 'Перемістити вниз';
-    downBtn.disabled = catIndex === sortedKeys.length - 1;
-    downBtn.onclick = (e) => {
-      e.stopPropagation();
-      moveCategoryDown(categoryKey);
-    };
-    categoryControls.appendChild(downBtn);
-
-    const editBtn = document.createElement('button');
-    editBtn.className = 'category-action-btn';
-    editBtn.innerHTML = '✏️';
-    editBtn.title = 'Редагувати категорію';
-    editBtn.onclick = (e) => {
-      e.stopPropagation();
-      openEditCategoryModal(categoryKey);
-    };
-    categoryControls.appendChild(editBtn);
-
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'category-action-btn delete';
-    deleteBtn.innerHTML = '🗑️';
-    deleteBtn.title = 'Видалити категорію';
-    deleteBtn.onclick = (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      deleteCategory(categoryKey);
-      return false;
-    };
-    categoryControls.appendChild(deleteBtn);
-
-    categoryHeader.appendChild(categoryControls);
-    categoryDiv.appendChild(categoryHeader);
-
-    // Контейнер для досягнень
-    const itemsContainer = document.createElement('div');
-    itemsContainer.className = 'category-items';
-
-    // Додаємо досягнення
-    category.items.forEach((achievement, achIndex) => {
-      const achievementDiv = document.createElement('div');
-      achievementDiv.className = `achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`;
-      if (!achievement.unlocked) {
-        achievementDiv.classList.add('focus-reveal');
-      } else {
-        achievementDiv.classList.add('revealed');
-      }
-      if (
-        activeAchievementEditKey === `${categoryKey}:${achievement.id}`
-      ) {
-        achievementDiv.classList.add('show-edit');
-      }
-
-      const achievementEditCorner = document.createElement('button');
-      achievementEditCorner.className = 'edit-corner-btn';
-      achievementEditCorner.type = 'button';
-      achievementEditCorner.title =
-        'Показати кнопки редагування досягнення';
-      achievementEditCorner.setAttribute(
-        'aria-label',
-        'Показати кнопки редагування досягнення',
-      );
-      achievementEditCorner.textContent = '✎';
-      achievementEditCorner.onclick = (e) => {
+  controls.appendChild(
+    createActionButton({
+      className: 'action-btn sort-btn',
+      html: '⬇️',
+      title: 'Перемістити вниз',
+      disabled: catIndex === totalCategories - 1,
+      onClick: (e) => {
         e.stopPropagation();
-        toggleAchievementEditControls(categoryKey, achievement.id);
-      };
-      achievementDiv.appendChild(achievementEditCorner);
+        moveCategoryDown(categoryKey);
+      },
+    }),
+  );
 
-      // ПЕРШИЙ РЯД - основний контент
-      const achievementMain = document.createElement('div');
-      achievementMain.className = 'achievement-main';
-      achievementMain.onclick = () =>
-        toggleAchievement(categoryKey, achievement.id);
+  controls.appendChild(
+    createActionButton({
+      className: 'category-action-btn',
+      html: '✏️',
+      title: 'Редагувати категорію',
+      onClick: (e) => {
+        e.stopPropagation();
+        openEditCategoryModal(categoryKey);
+      },
+    }),
+  );
 
-      // Іконка досягнення (клікабельна для перегляду)
-      if (achievement.image && achievement.image.startsWith('data:')) {
-        const img = document.createElement('img');
-        img.src = achievement.image;
-        img.className = 'custom-image achievement-icon';
-        img.style.cursor = 'zoom-in';
-        img.onclick = (e) => {
-          e.stopPropagation();
-          openImageModal(achievement.image);
-        };
-        achievementMain.appendChild(img);
-      } else if (achievement.icon) {
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'achievement-icon';
-        iconSpan.textContent = achievement.icon;
-        achievementMain.appendChild(iconSpan);
-      } else {
-        const iconSpan = document.createElement('span');
-        iconSpan.className = 'achievement-icon';
-        iconSpan.textContent = '🏆';
-        achievementMain.appendChild(iconSpan);
-      }
+  controls.appendChild(
+    createActionButton({
+      className: 'category-action-btn delete',
+      html: '🗑️',
+      title: 'Видалити категорію',
+      onClick: (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        deleteCategory(categoryKey);
+        return false;
+      },
+    }),
+  );
 
-      // Контент досягнення
-      const contentDiv = document.createElement('div');
-      contentDiv.className = 'achievement-content';
+  return controls;
+}
 
-      const nameDiv = document.createElement('div');
-      nameDiv.className = 'achievement-name';
-      nameDiv.textContent = achievement.name;
-      contentDiv.appendChild(nameDiv);
+function renderAchievementControls(
+  categoryKey,
+  achievement,
+  achIndex,
+  totalAchievements,
+) {
+  const controls = document.createElement('div');
+  controls.className = 'achievement-controls';
 
-      if (achievement.description) {
-        const descDiv = document.createElement('div');
-        descDiv.className = 'achievement-description';
-        descDiv.textContent = achievement.description;
-        contentDiv.appendChild(descDiv);
-      }
+  const actionRow = document.createElement('div');
+  actionRow.className = 'achievement-action-row';
 
-      achievementMain.appendChild(contentDiv);
-      achievementDiv.appendChild(achievementMain);
-
-      // ДРУГИЙ РЯД - всі кнопки управління
-      const achievementControls = document.createElement('div');
-      achievementControls.className = 'achievement-controls';
-
-      const achievementActionRow = document.createElement('div');
-      achievementActionRow.className = 'achievement-action-row';
-
-      const upBtn = document.createElement('button');
-      upBtn.className = 'action-btn sort-btn';
-      upBtn.innerHTML = '⬆️';
-      upBtn.title = 'Перемістити вгору';
-      upBtn.disabled = achIndex === 0;
-      upBtn.onclick = (e) => {
+  actionRow.appendChild(
+    createActionButton({
+      className: 'action-btn sort-btn',
+      html: '⬆️',
+      title: 'Перемістити вгору',
+      disabled: achIndex === 0,
+      onClick: (e) => {
         e.stopPropagation();
         moveAchievementUp(categoryKey, achievement.id);
-      };
-      achievementActionRow.appendChild(upBtn);
+      },
+    }),
+  );
 
-      const downBtn = document.createElement('button');
-      downBtn.className = 'action-btn sort-btn';
-      downBtn.innerHTML = '⬇️';
-      downBtn.title = 'Перемістити вниз';
-      downBtn.disabled = achIndex === category.items.length - 1;
-      downBtn.onclick = (e) => {
+  actionRow.appendChild(
+    createActionButton({
+      className: 'action-btn sort-btn',
+      html: '⬇️',
+      title: 'Перемістити вниз',
+      disabled: achIndex === totalAchievements - 1,
+      onClick: (e) => {
         e.stopPropagation();
         moveAchievementDown(categoryKey, achievement.id);
-      };
-      achievementActionRow.appendChild(downBtn);
+      },
+    }),
+  );
 
-      const editBtn = document.createElement('button');
-      editBtn.className = 'action-btn edit-btn';
-      editBtn.innerHTML = '✏️';
-      editBtn.title = 'Редагувати';
-      editBtn.onclick = (e) => {
+  actionRow.appendChild(
+    createActionButton({
+      className: 'action-btn edit-btn',
+      html: '✏️',
+      title: 'Редагувати',
+      onClick: (e) => {
         e.stopPropagation();
         openEditModal(categoryKey, achievement.id);
-      };
-      achievementActionRow.appendChild(editBtn);
+      },
+    }),
+  );
 
-      const deleteBtn = document.createElement('button');
-      deleteBtn.className = 'action-btn delete-btn';
-      deleteBtn.innerHTML = '🗑️';
-      deleteBtn.title = 'Видалити';
-      deleteBtn.onclick = (e) => {
+  actionRow.appendChild(
+    createActionButton({
+      className: 'action-btn delete-btn',
+      html: '🗑️',
+      title: 'Видалити',
+      onClick: (e) => {
         e.stopPropagation();
         e.preventDefault();
         deleteAchievement(categoryKey, achievement.id);
         return false;
-      };
-      achievementActionRow.appendChild(deleteBtn);
+      },
+    }),
+  );
 
-      achievementControls.appendChild(achievementActionRow);
-      achievementDiv.appendChild(achievementControls);
-      itemsContainer.appendChild(achievementDiv);
-    });
+  controls.appendChild(actionRow);
+  return controls;
+}
 
-    categoryDiv.appendChild(itemsContainer);
-    container.appendChild(categoryDiv);
+function renderAchievement(categoryKey, achievement, achIndex, totalAchievements) {
+  const achievementDiv = document.createElement('div');
+  achievementDiv.className = `achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`;
+
+  if (!achievement.unlocked) {
+    achievementDiv.classList.add('focus-reveal');
+  } else {
+    achievementDiv.classList.add('revealed');
+  }
+
+  if (activeAchievementEditKey === `${categoryKey}:${achievement.id}`) {
+    achievementDiv.classList.add('show-edit');
+  }
+
+  achievementDiv.appendChild(
+    createEditCornerButton({
+      title: 'Показати кнопки редагування досягнення',
+      ariaLabel: 'Показати кнопки редагування досягнення',
+      onClick: (e) => {
+        e.stopPropagation();
+        toggleAchievementEditControls(categoryKey, achievement.id);
+      },
+    }),
+  );
+
+  const main = document.createElement('div');
+  main.className = 'achievement-main';
+  main.onclick = () => toggleAchievement(categoryKey, achievement.id);
+  main.appendChild(createAchievementIconNode(achievement));
+
+  const content = document.createElement('div');
+  content.className = 'achievement-content';
+
+  const name = document.createElement('div');
+  name.className = 'achievement-name';
+  name.textContent = achievement.name;
+  content.appendChild(name);
+
+  if (achievement.description) {
+    const description = document.createElement('div');
+    description.className = 'achievement-description';
+    description.textContent = achievement.description;
+    content.appendChild(description);
+  }
+
+  main.appendChild(content);
+  achievementDiv.appendChild(main);
+
+  achievementDiv.appendChild(
+    renderAchievementControls(
+      categoryKey,
+      achievement,
+      achIndex,
+      totalAchievements,
+    ),
+  );
+
+  return achievementDiv;
+}
+
+function renderCategory(categoryKey, category, catIndex, totalCategories) {
+  const categoryDiv = document.createElement('div');
+  categoryDiv.className = 'category';
+  categoryDiv.dataset.categoryKey = categoryKey;
+
+  if (activeCategoryEditKey === categoryKey) {
+    categoryDiv.classList.add('show-edit');
+  }
+  if (category.collapsed) {
+    categoryDiv.classList.add('collapsed');
+  }
+
+  categoryDiv.appendChild(
+    createEditCornerButton({
+      title: 'Показати кнопки редагування категорії',
+      ariaLabel: 'Показати кнопки редагування категорії',
+      onClick: (e) => {
+        e.stopPropagation();
+        toggleCategoryEditControls(categoryKey);
+      },
+    }),
+  );
+
+  const header = document.createElement('div');
+  header.className = 'category-header';
+
+  const headerTop = document.createElement('div');
+  headerTop.className = 'category-header-top';
+  headerTop.onclick = () => toggleCategoryCollapse(categoryKey);
+
+  const collapseBtn = createActionButton({
+    className: 'collapse-toggle',
+    html: '▼',
+    title: category.collapsed ? 'Розгорнути' : 'Згорнути',
+    onClick: (e) => {
+      e.stopPropagation();
+      toggleCategoryCollapse(categoryKey);
+    },
+  });
+  headerTop.appendChild(collapseBtn);
+
+  headerTop.appendChild(createCategoryIconNode(category));
+
+  const title = document.createElement('span');
+  title.className = 'category-title';
+  title.textContent = category.title;
+  headerTop.appendChild(title);
+
+  header.appendChild(headerTop);
+  header.appendChild(renderCategoryControls(categoryKey, catIndex, totalCategories));
+  categoryDiv.appendChild(header);
+
+  const itemsContainer = document.createElement('div');
+  itemsContainer.className = 'category-items';
+  const totalAchievements = category.items.length;
+  category.items.forEach((achievement, achIndex) => {
+    itemsContainer.appendChild(
+      renderAchievement(categoryKey, achievement, achIndex, totalAchievements),
+    );
+  });
+
+  categoryDiv.appendChild(itemsContainer);
+  return categoryDiv;
+}
+
+// Головний рендер категорій і карток досягнень.
+function renderAchievements() {
+  const container = $('categoriesContainer');
+  container.innerHTML = '';
+
+  const sortedKeys = getSortedCategoryKeys();
+  const totalCategories = sortedKeys.length;
+
+  sortedKeys.forEach((categoryKey, catIndex) => {
+    const category = achievements[categoryKey];
+    container.appendChild(
+      renderCategory(categoryKey, category, catIndex, totalCategories),
+    );
   });
 
   updateStats();
@@ -1681,18 +1649,18 @@ function showUnlockModal(achievement) {
 
 // Закрити модальне вікно досягнення.
 function closeModal() {
-  document.getElementById('achievementModal').classList.remove('active');
+  setModalActive('achievementModal', false);
 }
 
 // Відкрити зображення у повний розмір.
 function openImageModal(imageSrc) {
-  document.getElementById('imageModalImg').src = imageSrc;
-  document.getElementById('imageModal').classList.add('active');
+  $('imageModalImg').src = imageSrc;
+  setModalActive('imageModal', true);
 }
 
 // Закрити модальне вікно зображення.
 function closeImageModal() {
-  document.getElementById('imageModal').classList.remove('active');
+  setModalActive('imageModal', false);
 }
 
 // Оновлення лічильників статистики.
@@ -1828,7 +1796,7 @@ function showExportDataModal(dataStr, fileName) {
     copyBtn.textContent = '✅ Скопійовано!';
     setTimeout(() => {
       copyBtn.textContent = '📋 Копіювати';
-    }, 2000);
+    }, EXPORT_COPY_RESET_MS);
   };
   btnContainer.appendChild(copyBtn);
 
@@ -1856,20 +1824,18 @@ function showExportDataModal(dataStr, fileName) {
 
 // Відкрити підтвердження імпорту.
 function importData() {
-  document.getElementById('confirmImportModal').classList.add('active');
+  setModalActive('confirmImportModal', true);
 }
 
 // Закрити модальне вікно підтвердження імпорту.
 function closeConfirmImport() {
-  document
-    .getElementById('confirmImportModal')
-    .classList.remove('active');
+  setModalActive('confirmImportModal', false);
 }
 
 // Підтвердити імпорт і відкрити file picker.
 function confirmImport() {
   closeConfirmImport();
-  document.getElementById('importFile').click();
+  $('importFile').click();
 }
 
 // Обробка імпорту файлу.
@@ -1925,17 +1891,22 @@ function handleImportFile(event) {
 // #region Reset, FAB and Quick Actions
 // Відкрити модальне вікно підтвердження скидання.
 function openConfirmReset() {
-  document.getElementById('confirmResetModal').classList.add('active');
+  setModalActive('confirmResetModal', true);
 }
 
 function toggleFabMenu() {
-  const fabMenu = document.getElementById('fabMenu');
+  const fabMenu = $('fabMenu');
+  if (!fabMenu) {
+    return;
+  }
   fabMenu.classList.toggle('open');
 }
 
 function closeFabMenu() {
-  const fabMenu = document.getElementById('fabMenu');
-  fabMenu.classList.remove('open');
+  const fabMenu = $('fabMenu');
+  if (fabMenu) {
+    fabMenu.classList.remove('open');
+  }
 }
 
 function openAddFromFab() {
@@ -1948,46 +1919,43 @@ function openCategoryFromFab() {
   openCategoryModal();
 }
 
-function openSettingsFromFab() {
-  closeFabMenu();
-  openQuickActionsModal();
-}
-
 function openQuickActionsModal() {
   if (!confirmFormModalSwitch('quickActionsModal')) {
     return;
   }
 
-  document.getElementById('quickActionsModal').classList.add('active');
+  setModalActive('quickActionsModal', true);
   closeFabMenu();
 }
 
 function closeQuickActionsModal() {
-  document.getElementById('quickActionsModal').classList.remove('active');
+  setModalActive('quickActionsModal', false);
 }
 
 function runQuickAction(action) {
   closeQuickActionsModal();
-  if (action === 'export') {
-    exportData();
-  } else if (action === 'import') {
-    importData();
-  } else if (action === 'storage') {
-    checkStorageInfo();
-  } else if (action === 'theme') {
-    openSettingsModal();
+  const actionMap = {
+    export: exportData,
+    import: importData,
+    storage: checkStorageInfo,
+    theme: openSettingsModal,
+    reset: openConfirmReset,
+  };
+  const handler = actionMap[action];
+  if (handler) {
+    handler();
   }
 }
 
 // Закрити модальне вікно підтвердження скидання.
 function closeConfirmReset() {
-  document.getElementById('confirmResetModal').classList.remove('active');
+  setModalActive('confirmResetModal', false);
 }
 
 // Підтвердити скидання всіх даних.
 function confirmReset() {
   // Видаляємо всі збережені дані
-  localStorage.removeItem('lifeAchievements');
+  localStorage.removeItem(STORAGE_KEY);
 
   // Перезавантажуємо сторінку для повного скидання
   location.reload();
@@ -1995,83 +1963,110 @@ function confirmReset() {
 // #endregion
 
 // #region Global Event Listeners
-// Закриття модальних вікон по кліку на фон.
-document
-  .getElementById('formModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeFormModal();
+function initStaticEventHandlers() {
+  const bindClick = (id, handler) => {
+    const element = $(id);
+    if (element) {
+      element.addEventListener('click', handler);
+    }
+  };
+
+  const bindSubmit = (id, handler) => {
+    const form = $(id);
+    if (form) {
+      form.addEventListener('submit', handler);
+    }
+  };
+
+  const bindChange = (id, handler) => {
+    const input = $(id);
+    if (input) {
+      input.addEventListener('change', handler);
+    }
+  };
+
+  const bindInput = (id, handler) => {
+    const input = $(id);
+    if (input) {
+      input.addEventListener('input', handler);
+    }
+  };
+
+  bindSubmit('achievementForm', saveAchievement);
+  bindSubmit('categoryForm', saveCategory);
+  bindSubmit('settingsForm', saveSettings);
+
+  bindChange('importFile', handleImportFile);
+  bindChange('imageUpload', handleImageUpload);
+  bindChange('categoryImageUpload', handleCategoryImageUpload);
+
+  bindClick('achievementUploadArea', () => $('imageUpload')?.click());
+  bindClick('categoryUploadArea', () => $('categoryImageUpload')?.click());
+
+  bindClick('closeAchievementModalBtn', closeModal);
+  bindClick('cancelAchievementFormBtn', closeFormModal);
+  bindClick('cancelCategoryFormBtn', closeCategoryModal);
+  bindClick('cancelSettingsFormBtn', closeSettingsModal);
+  bindClick('closeQuickActionsBtn', closeQuickActionsModal);
+  bindClick('cancelImportBtn', closeConfirmImport);
+  bindClick('confirmImportBtn', confirmImport);
+  bindClick('closeStorageInfoBtn', closeStorageInfo);
+  bindClick('cancelResetBtn', closeConfirmReset);
+  bindClick('confirmResetBtn', confirmReset);
+  bindClick('cancelDeleteBtn', closeConfirmDelete);
+  bindClick('confirmDeleteBtn', confirmDelete);
+
+  bindClick('fabMainBtn', toggleFabMenu);
+  bindClick('fabAddBtn', openAddFromFab);
+  bindClick('fabCategoryBtn', openCategoryFromFab);
+  bindClick('fabQuickActionsBtn', openQuickActionsModal);
+
+  document.querySelectorAll('.quick-action-btn[data-quick-action]').forEach((button) => {
+    button.addEventListener('click', () => {
+      runQuickAction(button.dataset.quickAction);
+    });
+  });
+
+  [
+    { id: 'formModal', close: closeFormModal, closeOnAnyClick: false },
+    { id: 'categoryModal', close: closeCategoryModal, closeOnAnyClick: false },
+    { id: 'achievementModal', close: closeModal, closeOnAnyClick: false },
+    { id: 'confirmResetModal', close: closeConfirmReset, closeOnAnyClick: false },
+    { id: 'confirmDeleteModal', close: closeConfirmDelete, closeOnAnyClick: false },
+    { id: 'storageInfoModal', close: closeStorageInfo, closeOnAnyClick: false },
+    { id: 'confirmImportModal', close: closeConfirmImport, closeOnAnyClick: false },
+    { id: 'quickActionsModal', close: closeQuickActionsModal, closeOnAnyClick: false },
+    { id: 'imageModal', close: closeImageModal, closeOnAnyClick: true },
+  ].forEach((modalConfig) => {
+    const modal = $(modalConfig.id);
+    if (!modal) {
+      return;
+    }
+
+    modal.addEventListener('click', function (e) {
+      if (modalConfig.closeOnAnyClick || e.target === this) {
+        modalConfig.close();
+      }
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    const fabMenu = $('fabMenu');
+    if (fabMenu && !fabMenu.contains(e.target)) {
+      closeFabMenu();
     }
   });
 
-document
-  .getElementById('categoryModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeCategoryModal();
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      closeFabMenu();
     }
   });
 
-document
-  .getElementById('achievementModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeModal();
-    }
-  });
-
-document
-  .getElementById('confirmResetModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeConfirmReset();
-    }
-  });
-
-document
-  .getElementById('confirmDeleteModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeConfirmDelete();
-    }
-  });
-
-document
-  .getElementById('storageInfoModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeStorageInfo();
-    }
-  });
-
-document
-  .getElementById('confirmImportModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeConfirmImport();
-    }
-  });
-
-document
-  .getElementById('quickActionsModal')
-  .addEventListener('click', function (e) {
-    if (e.target === this) {
-      closeQuickActionsModal();
-    }
-  });
-
-document.addEventListener('click', function (e) {
-  const fabMenu = document.getElementById('fabMenu');
-  if (!fabMenu.contains(e.target)) {
-    closeFabMenu();
-  }
-});
-
-document.addEventListener('keydown', function (e) {
-  if (e.key === 'Escape') {
-    closeFabMenu();
-  }
-});
+  bindInput('themeColor1', updateGradientPreview);
+  bindInput('themeColor2', updateGradientPreview);
+  bindInput('themeAngle', updateGradientPreview);
+}
 // #endregion
 
 // #region Settings Modal
@@ -2081,45 +2076,32 @@ function openSettingsModal() {
     return;
   }
 
-  document.getElementById('themeColor1').value =
-    settings.color1 || '#667eea';
-  document.getElementById('themeColor2').value =
-    settings.color2 || '#764ba2';
-  document.getElementById('themeAngle').value = settings.angle || 135;
+  $('themeColor1').value = settings.color1 || '#667eea';
+  $('themeColor2').value = settings.color2 || '#764ba2';
+  $('themeAngle').value = settings.angle || 135;
   updateGradientPreview();
-  document.getElementById('settingsModal').classList.add('active');
+  setModalActive('settingsModal', true);
 }
 
 function closeSettingsModal() {
-  document.getElementById('settingsModal').classList.remove('active');
+  setModalActive('settingsModal', false);
 }
 
 function updateGradientPreview() {
-  const c1 = document.getElementById('themeColor1').value;
-  const c2 = document.getElementById('themeColor2').value;
-  const angle = document.getElementById('themeAngle').value || 135;
-  const preview = document.getElementById('gradientPreview');
+  const c1 = $('themeColor1').value;
+  const c2 = $('themeColor2').value;
+  const angle = $('themeAngle').value || 135;
+  const preview = $('gradientPreview');
   if (preview) {
     preview.style.background = `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 100%)`;
   }
 }
 
-document
-  .getElementById('themeColor1')
-  .addEventListener('input', updateGradientPreview);
-document
-  .getElementById('themeColor2')
-  .addEventListener('input', updateGradientPreview);
-document
-  .getElementById('themeAngle')
-  .addEventListener('input', updateGradientPreview);
-
 function saveSettings(e) {
   e.preventDefault();
-  const c1 = document.getElementById('themeColor1').value;
-  const c2 = document.getElementById('themeColor2').value;
-  const angle =
-    parseInt(document.getElementById('themeAngle').value, 10) || 135;
+  const c1 = $('themeColor1').value;
+  const c2 = $('themeColor2').value;
+  const angle = parseInt($('themeAngle').value, 10) || 135;
   settings.color1 = c1;
   settings.color2 = c2;
   settings.angle = angle;
@@ -2132,6 +2114,7 @@ function saveSettings(e) {
 
 // #region App Bootstrap
 // Ініціалізація стану й першого рендера.
+initStaticEventHandlers();
 loadProgress();
 applySettings();
 renderAchievements();

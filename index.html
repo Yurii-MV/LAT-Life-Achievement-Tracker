@@ -30,13 +30,7 @@
         />
         <p>Life Achievement Tracker</p>
       </header>
-      <input
-        type="file"
-        id="importFile"
-        accept=".json"
-        style="display: none"
-        onchange="handleImportFile(event)"
-      />
+      <input type="file" id="importFile" accept=".json" />
 
       <div class="stats">
         <div class="stat-card">
@@ -56,11 +50,11 @@
         <div class="modal-icon" id="modalIcon">🎉</div>
         <h2 id="modalTitle">Досягнення відкрито!</h2>
         <p id="modalDescription"></p>
-        <button onclick="closeModal()">Супер!</button>
+        <button id="closeAchievementModalBtn">Супер!</button>
       </div>
     </div>
 
-    <div class="modal" id="imageModal" onclick="closeImageModal()">
+    <div class="modal" id="imageModal">
       <div class="image-modal-content">
         <img id="imageModalImg" src="" alt="Повний розмір" />
       </div>
@@ -69,7 +63,7 @@
     <div class="form-modal" id="formModal">
       <div class="form-content">
         <h2 id="formTitle">Додати досягнення</h2>
-        <form id="achievementForm" onsubmit="saveAchievement(event)">
+        <form id="achievementForm">
           <div class="form-group">
             <label for="categorySelect">Категорія</label>
             <select id="categorySelect" required>
@@ -89,27 +83,15 @@
 
           <div class="form-group">
             <label>Іконка або зображення (необов'язково)</label>
-            <div
-              class="image-upload-area"
-              onclick="document.getElementById('imageUpload').click()"
-            >
-              <input
-                type="file"
-                id="imageUpload"
-                accept="image/*"
-                onchange="handleImageUpload(event)"
-              />
+            <div class="image-upload-area" id="achievementUploadArea">
+              <input type="file" id="imageUpload" accept="image/*" />
               <div id="uploadContent">
                 <div class="upload-text">
                   Натисніть, щоб завантажити зображення<br />або оберіть емодзі
                   нижче
                 </div>
               </div>
-              <img
-                id="previewImage"
-                class="preview-image"
-                style="display: none"
-              />
+              <img id="previewImage" class="preview-image" />
             </div>
           </div>
 
@@ -126,7 +108,7 @@
             <button
               type="button"
               class="btn btn-secondary"
-              onclick="closeFormModal()"
+              id="cancelAchievementFormBtn"
             >
               Скасувати
             </button>
@@ -139,7 +121,7 @@
     <div class="form-modal" id="categoryModal">
       <div class="form-content">
         <h2 id="categoryFormTitle">Додати категорію</h2>
-        <form id="categoryForm" onsubmit="saveCategory(event)">
+        <form id="categoryForm">
           <div class="form-group">
             <label for="categoryName">Назва категорії</label>
             <input
@@ -153,27 +135,15 @@
 
           <div class="form-group">
             <label>Іконка категорії (необов'язково)</label>
-            <div
-              class="image-upload-area"
-              onclick="document.getElementById('categoryImageUpload').click()"
-            >
-              <input
-                type="file"
-                id="categoryImageUpload"
-                accept="image/*"
-                onchange="handleCategoryImageUpload(event)"
-              />
+            <div class="image-upload-area" id="categoryUploadArea">
+              <input type="file" id="categoryImageUpload" accept="image/*" />
               <div id="categoryUploadContent">
                 <div class="upload-text">
                   Натисніть, щоб завантажити зображення<br />або оберіть емодзі
                   нижче
                 </div>
               </div>
-              <img
-                id="categoryPreviewImage"
-                class="preview-image"
-                style="display: none"
-              />
+              <img id="categoryPreviewImage" class="preview-image" />
             </div>
           </div>
 
@@ -189,7 +159,7 @@
             <button
               type="button"
               class="btn btn-secondary"
-              onclick="closeCategoryModal()"
+              id="cancelCategoryFormBtn"
             >
               Скасувати
             </button>
@@ -202,45 +172,52 @@
     <div class="form-modal" id="settingsModal">
       <div class="form-content">
         <h2>Налаштування теми</h2>
-        <form id="settingsForm" onsubmit="saveSettings(event)">
+        <form id="settingsForm">
           <div class="form-group">
-            <label for="themeColor1">Колір 1</label>
-            <input type="color" id="themeColor1" value="#667eea" />
-          </div>
-
-          <div class="form-group">
-            <label for="themeColor2">Колір 2</label>
-            <input type="color" id="themeColor2" value="#764ba2" />
-          </div>
-
-          <div class="form-group">
-            <label for="themeAngle">Кут градієнта (°)</label>
-            <input
-              type="number"
-              id="themeAngle"
-              min="0"
-              max="360"
-              value="135"
-            />
+            <div class="theme-settings-row">
+              <div class="theme-settings-panel theme-colors-panel">
+                <label>Кольори</label>
+                <div class="theme-colors-row">
+                  <input
+                    type="color"
+                    id="themeColor1"
+                    class="theme-color-input"
+                    value="#667eea"
+                    aria-label="Колір 1"
+                  />
+                  <input
+                    type="color"
+                    id="themeColor2"
+                    class="theme-color-input"
+                    value="#764ba2"
+                    aria-label="Колір 2"
+                  />
+                </div>
+              </div>
+              <div class="theme-settings-panel theme-angle-panel">
+                <label for="themeAngle">Кут градієнта</label>
+                <input
+                  type="number"
+                  id="themeAngle"
+                  class="theme-angle-input"
+                  min="0"
+                  max="360"
+                  value="135"
+                />
+              </div>
+            </div>
           </div>
 
           <div class="form-group">
             <label>Попередній перегляд</label>
-            <div
-              id="gradientPreview"
-              style="
-                height: 80px;
-                border-radius: 8px;
-                border: 1px solid #e0e0e0;
-              "
-            ></div>
+            <div id="gradientPreview" class="gradient-preview"></div>
           </div>
 
           <div class="form-buttons">
             <button
               type="button"
               class="btn btn-secondary"
-              onclick="closeSettingsModal()"
+              id="cancelSettingsFormBtn"
             >
               Скасувати
             </button>
@@ -257,7 +234,7 @@
           <button
             type="button"
             class="quick-action-btn"
-            onclick="runQuickAction('export')"
+            data-quick-action="export"
             title="Експорт"
           >
             💾 Експорт
@@ -265,7 +242,7 @@
           <button
             type="button"
             class="quick-action-btn"
-            onclick="runQuickAction('import')"
+            data-quick-action="import"
             title="Імпорт"
           >
             📥 Імпорт
@@ -273,7 +250,7 @@
           <button
             type="button"
             class="quick-action-btn"
-            onclick="runQuickAction('storage')"
+            data-quick-action="storage"
             title="Сховище"
           >
             🗄️ Сховище
@@ -281,17 +258,25 @@
           <button
             type="button"
             class="quick-action-btn"
-            onclick="runQuickAction('theme')"
+            data-quick-action="theme"
             title="Налаштування теми"
           >
             🎨 Тема
           </button>
+          <button
+            type="button"
+            class="quick-action-btn"
+            data-quick-action="reset"
+            title="Скинути все"
+          >
+            🔄 Скинути все
+          </button>
         </div>
-        <div class="form-buttons" style="margin-top: 18px">
+        <div class="form-buttons quick-actions-footer">
           <button
             type="button"
             class="btn btn-secondary"
-            onclick="closeQuickActionsModal()"
+            id="closeQuickActionsBtn"
           >
             Закрити
           </button>
@@ -310,10 +295,8 @@
           >
         </p>
         <div class="confirm-buttons">
-          <button class="btn-cancel" onclick="closeConfirmImport()">
-            Скасувати
-          </button>
-          <button class="btn-confirm" onclick="confirmImport()">
+          <button class="btn-cancel" id="cancelImportBtn">Скасувати</button>
+          <button class="btn-confirm" id="confirmImportBtn">
             Так, імпортувати
           </button>
         </div>
@@ -326,9 +309,7 @@
         <h2>Використання сховища</h2>
         <p id="storageInfoMessage"></p>
         <div class="confirm-buttons">
-          <button class="btn-cancel" onclick="closeStorageInfo()">
-            Закрити
-          </button>
+          <button class="btn-cancel" id="closeStorageInfoBtn">Закрити</button>
         </div>
       </div>
     </div>
@@ -343,10 +324,8 @@
         </p>
         <p><strong>Цю дію неможливо скасувати!</strong></p>
         <div class="confirm-buttons">
-          <button class="btn-cancel" onclick="closeConfirmReset()">
-            Скасувати
-          </button>
-          <button class="btn-confirm" onclick="confirmReset()">
+          <button class="btn-cancel" id="cancelResetBtn">Скасувати</button>
+          <button class="btn-confirm" id="confirmResetBtn">
             Так, скинути все
           </button>
         </div>
@@ -359,30 +338,19 @@
         <h2 id="confirmDeleteTitle">Видалити?</h2>
         <p id="confirmDeleteMessage"></p>
         <div class="confirm-buttons">
-          <button class="btn-cancel" onclick="closeConfirmDelete()">
-            Скасувати
-          </button>
-          <button class="btn-confirm" onclick="confirmDelete()">
+          <button class="btn-cancel" id="cancelDeleteBtn">Скасувати</button>
+          <button class="btn-confirm" id="confirmDeleteBtn">
             Так, видалити
           </button>
         </div>
       </div>
     </div>
 
-    <button
-      class="reset-btn"
-      onclick="openConfirmReset()"
-      title="Скинути всі дані"
-    >
-      <span>🔄</span>
-      <span>Скинути все</span>
-    </button>
-
     <div class="fab-menu" id="fabMenu">
       <button
         class="fab-btn fab-sub-btn"
         type="button"
-        onclick="openAddFromFab()"
+        id="fabAddBtn"
         title="Додати досягнення"
         aria-label="Додати досягнення"
       >
@@ -391,7 +359,7 @@
       <button
         class="fab-btn fab-sub-btn"
         type="button"
-        onclick="openCategoryFromFab()"
+        id="fabCategoryBtn"
         title="Додати категорію"
         aria-label="Додати категорію"
       >
@@ -400,7 +368,7 @@
       <button
         class="fab-btn fab-sub-btn"
         type="button"
-        onclick="openQuickActionsModal()"
+        id="fabQuickActionsBtn"
         title="Налаштування"
         aria-label="Налаштування"
       >
@@ -409,7 +377,7 @@
       <button
         class="fab-btn fab-main-btn"
         type="button"
-        onclick="toggleFabMenu()"
+        id="fabMainBtn"
         title="Меню додавання"
         aria-label="Відкрити меню додавання"
       >
