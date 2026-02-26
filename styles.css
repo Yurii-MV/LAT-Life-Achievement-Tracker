@@ -1,0 +1,989 @@
+/* LAT - Life Achievement Tracker */
+/* Формат секцій: CSS-підтримувані коментарі у стилі #region / #endregion */
+
+/* #region Base / Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --app-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--app-gradient);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+/* #endregion Base / Global */
+
+/* #region Header / Stats */
+header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header-logo {
+  width: auto;
+  height: 100px;
+  margin-bottom: 10px;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 20px 30px;
+  border-radius: 15px;
+  color: white;
+  text-align: center;
+  min-width: 150px;
+}
+
+.stat-number {
+  font-size: 2em;
+  font-weight: bold;
+  display: block;
+}
+
+.stat-label {
+  font-size: 0.9em;
+  opacity: 0.9;
+  margin-top: 5px;
+}
+/* #endregion Header / Stats */
+
+/* #region Categories */
+.categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+  align-items: start;
+}
+
+.category {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.category-header {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+  user-select: none;
+  transition:
+    margin-bottom 0.3s ease,
+    padding-bottom 0.3s ease,
+    border-bottom-color 0.3s ease;
+}
+
+.category-header-top {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: margin-bottom 0.3s ease;
+}
+
+.category-controls {
+  display: none;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.category.collapsed .category-header {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom-color: transparent;
+}
+
+.category.collapsed .category-header-top {
+  margin-bottom: 0;
+}
+
+.category-icon {
+  font-size: 2em;
+  margin-right: 15px;
+}
+
+.category-title {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #333;
+  flex: 1;
+}
+
+.collapse-toggle {
+  /* background removed — gradient will apply to the text only */
+  background: transparent;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 5px;
+  margin-right: 10px;
+  transition: transform 0.3s ease;
+  color: white; /* fallback for browsers that don't support text-clip */
+  border-radius: 6px;
+  display: inline-block;
+
+  /* apply gradient to the TEXT (uses --app-gradient set by settings) */
+  background-image: var(--app-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.category.collapsed .collapse-toggle {
+  transform: rotate(-90deg);
+}
+
+.category-items {
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.category.collapsed .category-items {
+  max-height: 0;
+  opacity: 0;
+}
+/* #endregion Categories */
+
+/* #region Achievements */
+.achievement {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.achievement.locked.focus-reveal {
+  opacity: 0;
+  filter: blur(16px);
+  transform: scale(1.04);
+  transition:
+    opacity 400ms ease,
+    filter 400ms ease,
+    transform 400ms ease;
+}
+
+.achievement.locked.focus-reveal.revealed {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+
+.achievement-main {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.achievement.unlocked {
+  background: var(--app-gradient);
+  color: white;
+}
+
+.achievement.unlocked .achievement-icon {
+  filter: grayscale(0%) brightness(1.2);
+}
+
+.achievement.locked {
+  opacity: 0.6;
+}
+
+.achievement.locked .achievement-icon {
+  filter: grayscale(100%);
+}
+
+.achievement-icon {
+  font-size: 2em;
+  margin-right: 15px;
+  transition: all 0.3s ease;
+  cursor: zoom-in;
+}
+
+.achievement-content {
+  flex: 1;
+}
+
+.achievement-name {
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.achievement-description {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.achievement-controls {
+  display: none;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  padding-bottom: 8px;
+}
+
+.achievement-controls .sort-controls {
+  margin-right: 0;
+}
+
+.achievement-action-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+/* #endregion Achievements */
+
+/* #region Progress / Unlock Animations */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.unlock-animation {
+  animation: unlockPulse 0.6s ease;
+}
+
+@keyframes unlockPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+/* #endregion Progress / Unlock Animations */
+
+/* #region Core Modals */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 400px;
+  animation: modalAppear 0.5s ease;
+}
+
+@keyframes modalAppear {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modal-icon {
+  font-size: 5em;
+  margin-bottom: 20px;
+}
+
+.image-modal-content {
+  max-width: 90%;
+  max-height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-modal-content img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.modal h2 {
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.modal p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.modal button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+/* #endregion Core Modals */
+
+/* #region Floating Action Menu (FAB) */
+.fab-menu {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1002;
+}
+
+.fab-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--app-gradient);
+  color: white;
+  border: none;
+  font-size: 2em;
+  cursor: pointer;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.fab-main-btn {
+  position: relative;
+  z-index: 2;
+}
+
+.fab-menu.open .fab-main-btn {
+  transform: rotate(45deg);
+}
+
+.fab-sub-btn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 1.6em;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0) scale(0.9);
+}
+
+.fab-menu.open .fab-sub-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.fab-menu.open .fab-sub-btn:nth-of-type(1) {
+  transform: translateY(-75px) scale(1);
+}
+
+.fab-menu.open .fab-sub-btn:nth-of-type(2) {
+  transform: translateY(-150px) scale(1);
+}
+
+.fab-menu.open .fab-sub-btn:nth-of-type(3) {
+  transform: translateY(-225px) scale(1);
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.quick-action-btn {
+  background: var(--app-gradient);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 10px;
+  cursor: pointer;
+  font-size: 1.15em;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.2s ease;
+}
+/* #endregion Floating Action Menu (FAB) */
+
+/* #region Form Modals / Fields */
+.form-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.form-modal.active {
+  display: flex;
+}
+
+.form-content {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalAppear 0.5s ease;
+}
+
+.form-content h2 {
+  color: #667eea;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1em;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.image-upload-area {
+  border: 2px dashed #667eea;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.image-upload-area.has-image {
+  border-style: solid;
+}
+
+.preview-image {
+  max-width: 150px;
+  max-height: 150px;
+  margin: 10px auto;
+  display: block;
+  border-radius: 8px;
+}
+
+.upload-icon {
+  font-size: 3em;
+  color: #667eea;
+  margin-bottom: 10px;
+}
+
+.upload-text {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: var(--app-gradient);
+  color: white;
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+/* #endregion Form Modals / Fields */
+
+/* #region Action Buttons / Controls */
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  color: green;
+  cursor: pointer;
+  font-size: 1.05em;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.achievement.locked .action-btn {
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.achievement.locked .delete-btn {
+  background: rgba(244, 67, 54, 0.2);
+}
+
+.achievement.unlocked .delete-btn {
+  background: rgba(244, 67, 54, 0.2);
+}
+
+.custom-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 15px;
+}
+
+.sort-btn {
+  background: rgba(102, 126, 234, 0.1);
+  color: green;
+  border: none;
+  padding: 0;
+  border-radius: 6px;
+}
+
+.sort-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.achievement.unlocked .sort-btn {
+  background: rgba(255, 255, 255, 0.3);
+  color: green;
+}
+/* #endregion Action Buttons / Controls */
+
+/* #region Category Edit Controls */
+.category-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.category-action-btn {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  border: none;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.05em;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-corner-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  background: transparent;
+  color: #111;
+  font-size: 0.75em;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+}
+
+.category.show-edit .category-controls,
+.achievement.show-edit .achievement-controls {
+  display: flex;
+}
+
+.category.expanding .achievement.locked.focus-reveal {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+  transition: none;
+}
+
+.category-action-btn.delete {
+  background: rgba(244, 67, 54, 0.1);
+}
+/* #endregion Category Edit Controls */
+
+/* #region Category Form Helpers */
+.add-category-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.category-form-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+/* #endregion Category Form Helpers */
+
+/* #region Reset / Confirm / Picker */
+.warning-text {
+  color: #f44336;
+  font-size: 0.9em;
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(244, 67, 54, 0.1);
+  border-radius: 5px;
+}
+
+.reset-btn {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  background: rgba(244, 67, 54, 0.9);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-mode .reset-btn {
+  display: flex;
+}
+
+.confirm-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.confirm-modal.active {
+  display: flex;
+}
+
+.confirm-content {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  max-width: 450px;
+  animation: modalAppear 0.5s ease;
+}
+
+.confirm-icon {
+  font-size: 4em;
+  margin-bottom: 20px;
+}
+
+.confirm-content h2 {
+  color: #f44336;
+  margin-bottom: 15px;
+}
+
+.confirm-content p {
+  color: #666;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.confirm-buttons button {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.confirm-buttons .btn-cancel {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.confirm-buttons .btn-confirm {
+  background: #f44336;
+  color: white;
+}
+
+input[type='file'] {
+  display: none;
+}
+
+.emoji-picker {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.emoji-option {
+  font-size: 1.5em;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+/* #endregion Reset / Confirm / Picker */
+
+/* #region Desktop Hover Effects (mouse only) */
+@media (hover: hover) and (pointer: fine) {
+  .category-header-top:hover {
+    opacity: 0.8;
+  }
+
+  .collapse-toggle:hover {
+    transform: scale(1.2);
+  }
+
+  .achievement:hover {
+    transform: scale(0.975);
+    box-shadow:
+      0 -5px 15px rgba(0, 0, 0, 0.1),
+      0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .achievement.locked.focus-reveal.revealed:hover {
+    transform: scale(0.975);
+    box-shadow:
+      0 -5px 15px rgba(0, 0, 0, 0.1),
+      0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .modal button:hover {
+    transform: scale(1.05);
+  }
+
+  .fab-main-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .quick-action-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .image-upload-area:hover {
+    background: #f8f9ff;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  }
+
+  .btn-secondary:hover {
+    background: #d0d0d0;
+  }
+
+  .action-btn:hover {
+    transform: scale(1.1);
+  }
+
+  .edit-btn:hover {
+    background: #b9e90b;
+  }
+
+  .achievement.unlocked .action-btn.delete-btn:hover {
+    background: rgba(244, 67, 54, 0.2);
+  }
+
+  .achievement.locked .delete-btn:hover {
+    background: rgba(244, 67, 54, 0.2);
+  }
+
+  .sort-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: scale(1.05);
+  }
+
+  .edit-corner-btn:hover {
+    color: #000;
+    transform: scale(1.05);
+  }
+
+  .category-action-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: scale(1.1);
+  }
+
+  .category-action-btn.delete:hover {
+    background: rgba(244, 67, 54, 0.2);
+  }
+
+  .add-category-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .reset-btn:hover {
+    background: rgba(244, 67, 54, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+  }
+
+  .confirm-buttons .btn-cancel:hover {
+    background: #d0d0d0;
+  }
+
+  .confirm-buttons .btn-confirm:hover {
+    background: #d32f2f;
+    transform: scale(1.05);
+  }
+
+  .emoji-option:hover {
+    background: #f0f0f0;
+    transform: scale(1.2);
+  }
+}
+/* #endregion Desktop Hover Effects (mouse only) */
+
+/* #region Utility */
+.ghost-footer {
+  height: 50px;
+  opacity: 0;
+  pointer-events: none;
+}
+/* #endregion Utility */
