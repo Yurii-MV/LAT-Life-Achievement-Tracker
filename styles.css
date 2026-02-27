@@ -909,10 +909,10 @@ input[type='file'] {
 }
 /* #endregion Desktop Hover Effects (mouse only) */
 
-/* #region Utility */
+/* #region Footer */
 .ghost-footer {
   height: 50px;
   opacity: 0;
   pointer-events: none;
 }
-/* #endregion Utility */
+/* #endregion Footer */
