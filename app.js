@@ -297,7 +297,10 @@ let achievements = {
 
 // #region Runtime State
 const STORAGE_KEY = 'lifeAchievements';
-const STORAGE_LIMIT_MB = 5;
+const FALLBACK_STORAGE_LIMIT_MB = 512;
+const DB_NAME = 'lifeAchievementTrackerDB';
+const DB_VERSION = 1;
+const DB_STORE = 'appState';
 const IMAGE_UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
 const IMAGE_MAX_DIMENSION = 400;
 const CATEGORY_EXPAND_SYNC_DELAY_MS = 320;
@@ -320,6 +323,8 @@ let activeCategoryEditKey = null;
 let activeAchievementEditKey = null;
 let achievementFocusObserver = null;
 let achievementFocusRafId = null;
+let dbPromise = null;
+let saveQueue = Promise.resolve();
 
 let settings = {
   color1: '#667eea',
@@ -345,78 +350,232 @@ function applySettings() {
 }
 // #endregion
 
-// #region Persistence: localStorage and storage warnings
-// Завантаження даних з localStorage.
-function loadProgress() {
+// #region Persistence: IndexedDB and storage warnings
+function isIndexedDBAvailable() {
+  return typeof indexedDB !== 'undefined';
+}
+
+function openAppDB() {
+  if (!isIndexedDBAvailable()) {
+    return Promise.resolve(null);
+  }
+
+  if (dbPromise) {
+    return dbPromise;
+  }
+
+  dbPromise = new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(DB_STORE)) {
+        db.createObjectStore(DB_STORE);
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+
+  return dbPromise;
+}
+
+function readFromDB(key) {
+  return openAppDB().then(
+    (db) =>
+      new Promise((resolve, reject) => {
+        if (!db) {
+          resolve(null);
+          return;
+        }
+
+        const tx = db.transaction(DB_STORE, 'readonly');
+        const store = tx.objectStore(DB_STORE);
+        const request = store.get(key);
+
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => reject(request.error);
+      }),
+  );
+}
+
+function writeToDB(key, value) {
+  return openAppDB().then(
+    (db) =>
+      new Promise((resolve, reject) => {
+        if (!db) {
+          reject(new Error('IndexedDB не підтримується цим браузером'));
+          return;
+        }
+
+        const tx = db.transaction(DB_STORE, 'readwrite');
+        const store = tx.objectStore(DB_STORE);
+        const request = store.put(value, key);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      }),
+  );
+}
+
+function deleteFromDB(key) {
+  return openAppDB().then(
+    (db) =>
+      new Promise((resolve, reject) => {
+        if (!db) {
+          resolve();
+          return;
+        }
+
+        const tx = db.transaction(DB_STORE, 'readwrite');
+        const store = tx.objectStore(DB_STORE);
+        const request = store.delete(key);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      }),
+  );
+}
+
+async function migrateLegacyLocalStorageData() {
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    const savedData = JSON.parse(saved);
-    achievements = savedData.achievements || achievements;
-    nextId = savedData.nextId || nextId;
-    if (savedData.settings) {
-      settings = Object.assign({}, settings, savedData.settings);
-    }
+  if (!saved) {
+    return null;
   }
-}
 
-// Збереження даних.
-function saveProgress() {
   try {
-    const dataToSave = JSON.stringify({
-      achievements: achievements,
-      nextId: nextId,
-      settings: settings,
-    });
-
-    localStorage.setItem(STORAGE_KEY, dataToSave);
-
-    // Перевірка використання localStorage
-    checkStorageUsage();
-  } catch (e) {
-    if (
-      e.name === 'QuotaExceededError' ||
-      e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
-    ) {
-      alert(
-        '⚠️ УВАГА: Сховище переповнене!\n\nДані не збережено. Експортуйте свої досягнення (кнопка "💾 Експорт"), щоб не втратити їх.\n\nПорада: Видаліть старі зображення або використовуйте менші фото.',
-      );
-      console.error('localStorage quota exceeded');
-    } else {
-      console.error('Error saving to localStorage:', e);
-      alert('Помилка збереження даних: ' + e.message);
-    }
+    const parsed = JSON.parse(saved);
+    await writeToDB(STORAGE_KEY, parsed);
+    localStorage.removeItem(STORAGE_KEY);
+    return parsed;
+  } catch (error) {
+    console.error('Помилка міграції даних з localStorage:', error);
+    return null;
   }
 }
 
-function getStorageUsageChars() {
-  return Object.keys(localStorage).reduce((total, key) => {
-    return total + localStorage[key].length + key.length;
-  }, 0);
+// Завантаження даних з IndexedDB (з міграцією зі старого localStorage).
+async function loadProgress() {
+  try {
+    let savedData = await readFromDB(STORAGE_KEY);
+    if (!savedData) {
+      savedData = await migrateLegacyLocalStorageData();
+    }
+
+    if (savedData) {
+      achievements = savedData.achievements || achievements;
+      nextId = savedData.nextId || nextId;
+      if (savedData.settings) {
+        settings = Object.assign({}, settings, savedData.settings);
+      }
+    }
+  } catch (error) {
+    console.error('Помилка завантаження з IndexedDB:', error);
+    alert('Помилка завантаження даних: ' + error.message);
+  }
 }
 
-function getStorageUsageMetrics() {
-  const totalChars = getStorageUsageChars();
-  const usedMBValue = totalChars / 1024 / 1024;
-  const usedKBValue = totalChars / 1024;
-  const percentageValue = (usedMBValue / STORAGE_LIMIT_MB) * 100;
+// Збереження даних в IndexedDB.
+function saveProgress() {
+  const snapshot = {
+    achievements: achievements,
+    nextId: nextId,
+    settings: settings,
+  };
+
+  saveQueue = saveQueue
+    .then(async () => {
+      try {
+        await writeToDB(STORAGE_KEY, snapshot);
+        checkStorageUsage();
+      } catch (e) {
+        if (
+          e.name === 'QuotaExceededError' ||
+          e.name === 'NS_ERROR_DOM_QUOTA_REACHED'
+        ) {
+          alert(
+            '⚠️ УВАГА: Сховище переповнене!\n\nДані не збережено. Експортуйте свої досягнення (кнопка "💾 Експорт"), щоб не втратити їх.\n\nПорада: Видаліть старі зображення або використовуйте менші фото.',
+          );
+          console.error('IndexedDB quota exceeded');
+        } else {
+          console.error('Error saving to IndexedDB:', e);
+          alert('Помилка збереження даних: ' + e.message);
+        }
+      }
+    })
+    .catch((error) => {
+      console.error('Помилка черги збереження:', error);
+    });
+}
+
+async function getStorageUsageMetrics() {
+  if (navigator.storage && navigator.storage.estimate) {
+    try {
+      const estimate = await navigator.storage.estimate();
+      const usage = estimate.usage || 0;
+      const quota = estimate.quota || 0;
+      if (quota > 0) {
+        const usedMBValue = usage / 1024 / 1024;
+        const usedKBValue = usage / 1024;
+        const percentageValue = (usage / quota) * 100;
+        return {
+          usedMB: usedMBValue.toFixed(2),
+          usedKB: usedKBValue.toFixed(0),
+          percentage: percentageValue.toFixed(1),
+          percentageValue,
+          limitMB: (quota / 1024 / 1024).toFixed(2),
+          source: 'navigator.storage.estimate',
+          hasReliableQuota: true,
+        };
+      }
+    } catch (error) {
+      console.warn('Не вдалося отримати estimate() для сховища:', error);
+    }
+  }
+
+  // Fallback: приблизно рахуємо розмір поточного стану в UTF-16 байтах.
+  const serialized = JSON.stringify({
+    achievements: achievements,
+    nextId: nextId,
+    settings: settings,
+  });
+  const approxBytes = serialized.length * 2;
+  const usedMBValue = approxBytes / 1024 / 1024;
+  const usedKBValue = approxBytes / 1024;
+  const percentageValue = (usedMBValue / FALLBACK_STORAGE_LIMIT_MB) * 100;
 
   return {
     usedMB: usedMBValue.toFixed(2),
     usedKB: usedKBValue.toFixed(0),
     percentage: percentageValue.toFixed(1),
     percentageValue,
+    limitMB: FALLBACK_STORAGE_LIMIT_MB.toFixed(2),
+    source: 'fallback estimate',
+    hasReliableQuota: false,
   };
 }
 
 // Показати інформацію про сховище.
-function checkStorageInfo() {
+async function checkStorageInfo() {
   try {
-    const { usedMB, usedKB, percentage, percentageValue } =
-      getStorageUsageMetrics();
+    const {
+      usedMB,
+      usedKB,
+      percentage,
+      percentageValue,
+      limitMB,
+      source,
+      hasReliableQuota,
+    } =
+      await getStorageUsageMetrics();
 
     let status = '';
     let icon = '';
-    if (percentageValue < 50) {
+    if (!hasReliableQuota) {
+      status = 'Оцінка без точного ліміту';
+      icon = 'ℹ️';
+    } else if (percentageValue < 50) {
       status = 'Достатньо місця';
       icon = '✅';
     } else if (percentageValue < 70) {
@@ -434,11 +593,12 @@ function checkStorageInfo() {
               ${icon} ${status}
               
               Використано: ${usedMB} MB (${usedKB} KB)
-              Ліміт: ~${STORAGE_LIMIT_MB} MB
-              Заповнення: ${percentage}%
+              Ліміт: ${hasReliableQuota ? `~${limitMB} MB` : 'невідомий (показана орієнтовна оцінка)'}
+              Заповнення: ${hasReliableQuota ? `${percentage}%` : 'невідомо'}
+              Джерело метрики: ${source}
               
-              ${percentageValue > 70 ? '\n⚠️ Рекомендується зробити експорт даних!' : ''}
-              ${percentageValue > 90 ? '\n🚨 ТЕРМІНОВО експортуйте дані!' : ''}
+              ${hasReliableQuota && percentageValue > 70 ? '\n⚠️ Рекомендується зробити експорт даних!' : ''}
+              ${hasReliableQuota && percentageValue > 90 ? '\n🚨 ТЕРМІНОВО експортуйте дані!' : ''}
           `;
 
     $('storageInfoMessage').textContent = message;
@@ -454,13 +614,15 @@ function closeStorageInfo() {
 }
 
 // Перевірка використання сховища.
-function checkStorageUsage() {
+async function checkStorageUsage() {
   try {
-    const { usedMB, percentage, percentageValue } = getStorageUsageMetrics();
+    const { usedMB, percentage, percentageValue, hasReliableQuota } =
+      await getStorageUsageMetrics();
 
-    // Перевірка заповнення (без виводу в консоль)
+    if (!hasReliableQuota) {
+      return;
+    }
 
-    // Попередження при 70% заповнення
     if (percentageValue > 70 && percentageValue <= 90) {
       showStorageWarning('medium', usedMB, percentage);
     } else if (percentageValue > 90) {
@@ -482,9 +644,9 @@ function showStorageWarning(level, usedMB, percentage) {
 
   let message = '';
   if (level === 'medium') {
-    message = `⚠️ Сховище заповнене на ${percentage}%\n\nВикористано: ${usedMB} MB з ~5 MB\n\nРекомендація: Зробіть експорт даних для резервної копії.`;
+    message = `⚠️ Сховище заповнене на ${percentage}%\n\nВикористано: ${usedMB} MB\n\nРекомендація: Зробіть експорт даних для резервної копії.`;
   } else if (level === 'high') {
-    message = `🚨 УВАГА! Сховище майже переповнене!\n\nВикористано: ${usedMB} MB з ~5 MB (${percentage}%)\n\nТЕРМІНОВО: Експортуйте дані зараз, щоб не втратити їх!`;
+    message = `🚨 УВАГА! Сховище майже переповнене!\n\nВикористано: ${usedMB} MB (${percentage}%)\n\nТЕРМІНОВО: Експортуйте дані зараз, щоб не втратити їх!`;
   }
 
   if (message) {
@@ -1689,6 +1851,7 @@ function exportData() {
     const data = {
       achievements: achievements,
       nextId: nextId,
+      settings: settings,
       exportDate: new Date().toISOString(),
       version: '1.0',
     };
@@ -1857,6 +2020,10 @@ function handleImportFile(event) {
       // Відновлення даних
       achievements = data.achievements;
       nextId = data.nextId;
+      if (data.settings && typeof data.settings === 'object') {
+        settings = Object.assign({}, settings, data.settings);
+      }
+      applySettings();
 
       saveProgress();
       renderAchievements();
@@ -1953,12 +2120,16 @@ function closeConfirmReset() {
 }
 
 // Підтвердити скидання всіх даних.
-function confirmReset() {
-  // Видаляємо всі збережені дані
-  localStorage.removeItem(STORAGE_KEY);
-
-  // Перезавантажуємо сторінку для повного скидання
-  location.reload();
+async function confirmReset() {
+  try {
+    await deleteFromDB(STORAGE_KEY);
+    // Прибираємо legacy-дані, якщо вони ще лишилися.
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  } catch (error) {
+    console.error('Помилка скидання даних:', error);
+    alert('Помилка скидання даних: ' + error.message);
+  }
 }
 // #endregion
 
@@ -2114,10 +2285,17 @@ function saveSettings(e) {
 
 // #region App Bootstrap
 // Ініціалізація стану й першого рендера.
-initStaticEventHandlers();
-loadProgress();
-applySettings();
-renderAchievements();
+async function initializeApp() {
+  initStaticEventHandlers();
+  await loadProgress();
+  applySettings();
+  renderAchievements();
+}
+
+initializeApp().catch((error) => {
+  console.error('Помилка ініціалізації застосунку:', error);
+  alert('Помилка запуску застосунку: ' + error.message);
+});
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

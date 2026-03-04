@@ -12,11 +12,21 @@
   --app-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+html,
+body {
+  background: var(--app-gradient);
+  min-height: 100%;
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--app-gradient);
   min-height: 100vh;
-  padding: 20px;
+  min-height: 100dvh;
+  padding:
+    calc(20px + env(safe-area-inset-top))
+    calc(20px + env(safe-area-inset-right))
+    calc(20px + env(safe-area-inset-bottom))
+    calc(20px + env(safe-area-inset-left));
 }
 
 .container {
