@@ -84,7 +84,7 @@
               <input type="file" id="imageUpload" accept="image/*" />
               <div id="uploadContent">
                 <div class="upload-text">
-                  Натисніть, щоб завантажити зображення<br />або оберіть емодзі
+                  Натисніть, щоб завантажити зображення<br />або введіть емодзі
                   нижче
                 </div>
               </div>
@@ -93,8 +93,16 @@
           </div>
 
           <div class="form-group">
-            <label>Або оберіть емодзі</label>
-            <div class="emoji-picker" id="emojiPicker"></div>
+            <label for="achievementEmojiInput">Або введіть емодзі</label>
+            <input
+              type="text"
+              id="achievementEmojiInput"
+              placeholder="Наприклад: 🏆"
+              inputmode="text"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
           </div>
 
           <input type="hidden" id="achievementId" />
@@ -136,7 +144,7 @@
               <input type="file" id="categoryImageUpload" accept="image/*" />
               <div id="categoryUploadContent">
                 <div class="upload-text">
-                  Натисніть, щоб завантажити зображення<br />або оберіть емодзі
+                  Натисніть, щоб завантажити зображення<br />або введіть емодзі
                   нижче
                 </div>
               </div>
@@ -145,8 +153,16 @@
           </div>
 
           <div class="form-group">
-            <label>Або оберіть емодзі</label>
-            <div class="emoji-picker" id="categoryEmojiPicker"></div>
+            <label for="categoryEmojiInput">Або введіть емодзі</label>
+            <input
+              type="text"
+              id="categoryEmojiInput"
+              placeholder="Наприклад: 📁"
+              inputmode="text"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
           </div>
 
           <input type="hidden" id="categoryKey" />
@@ -303,7 +319,7 @@
     <div class="confirm-modal" id="storageInfoModal">
       <div class="confirm-content">
         <div class="confirm-icon">💾</div>
-        <h2>(v.17)<br />Використання сховища</h2>
+        <h2>(v.18)<br />Використання сховища</h2>
         <p id="storageInfoMessage"></p>
         <div class="confirm-buttons">
           <button class="btn-cancel" id="closeStorageInfoBtn">Закрити</button>
